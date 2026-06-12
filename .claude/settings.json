@@ -6,7 +6,24 @@
       "Bash(git config *)",
       "Bash(git init *)",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(php -v)",
+      "Bash(echo \"PHP: $\\(php -v)",
+      "Read(//home/steveredden/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0/skills/subagent-driven-development/**)",
+      "Bash(php --version)",
+      "Bash(composer --version)",
+      "Bash(npm --version)",
+      "Bash(composer create-project *)",
+      "Read(//tmp/qs-laravel/**)",
+      "Bash(rsync -a --ignore-existing --exclude=.git --exclude=.gitignore --exclude=docs --exclude=project-brief.md --exclude=.claude /tmp/qs-laravel/ /mnt/c/wamp/www/qs-analysis-portal/)",
+      "Bash(composer install *)",
+      "Bash(npm install *)",
+      "Bash(php artisan *)",
+      "Bash(git check-ignore *)",
+      "Bash(php -m)",
+      "Bash(mysql -h 127.0.0.1 -u root --connect-timeout=5 -e \"SELECT VERSION\\(\\);\")",
+      "Bash(mysql -h 127.0.0.1 -u root --connect-timeout=5 -e \"SHOW DATABASES LIKE 'qs_portal';\")",
+      "Bash(MYSQL_PWD='qsaAdmin00!!' mysql -h 127.0.0.1 -P 3306 -u qsa_admin --connect-timeout=5 -e \"SELECT CURRENT_USER\\(\\) AS whoami, VERSION\\(\\) AS version; SHOW GRANTS FOR CURRENT_USER\\(\\); SHOW DATABASES;\")"
     ]
   }
 }
