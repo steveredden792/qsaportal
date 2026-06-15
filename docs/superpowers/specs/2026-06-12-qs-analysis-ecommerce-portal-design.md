@@ -210,7 +210,7 @@ The MVP ships as one launch; the build is sequenced into five milestones.
 
 ## 12. Open questions / assumptions to confirm
 
-1. **PPR/PMR pricing** — no prices are specified in the brief; required before M2/M3.
+1. **PPR/PMR pricing** — RESOLVED (2026-06-13): dummy prices, per report, no bundles or subscriptions — PPR Standard £50 / Enhanced £75 / Premium £100; PMR Standard £50 / Premium £100. Revisit with client before launch.
 2. **Premium PMR references** — assumes the client supplies the referenced charities (by CC ref) in the PMR index file. To confirm.
 3. **Enhanced dataset deliverable** — assumed a downloadable file asset referenced in the index file. Client to confirm format and referencing.
 4. **Premium PMR "agreed supporting data"** — standardised or negotiated per sale? Needs an admin-configurable definition if bespoke.
@@ -265,7 +265,11 @@ The MVP ships as one launch; the build is sequenced into five milestones.
 | 100 | £900 | | 2,000 | £3,000 |
 | 200 | £1,200 | | | |
 
-**PPR** (Standard / Enhanced / Premium) and **PMR** (Standard / Premium): prices TBD — see open questions.
+**PPR** (per report, no bundles): Standard £50 · Enhanced £75 · Premium £100.
+
+**PMR** (per report, no bundles): Standard £50 · Premium £100.
+
+_(Dummy prices set 2026-06-13; revisit with client. S3 bucket `qs-analysis-store` configured; IAM still needs `s3:ListBucket` for the import pipeline.)_
 
 ## Appendix B — Glossary
 
