@@ -2,6 +2,9 @@
 
 use App\Support\Money;
 use App\Support\Pricing;
+use Tests\TestCase;
+
+uses(TestCase::class);
 
 it('formats pence as pounds', function () {
     expect(Money::format(2500))->toBe('£25.00')
