@@ -5,8 +5,8 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'welcome');
 
 Route::get('/catalogue/far', \App\Livewire\FarCatalogue::class)->name('catalogue.far');
-Route::get('/catalogue/ppr', [\App\Http\Controllers\CatalogueController::class, 'ppr'])->name('catalogue.ppr');
-Route::get('/catalogue/pmr', [\App\Http\Controllers\CatalogueController::class, 'pmr'])->name('catalogue.pmr');
+Route::get('/catalogue/ppr', \App\Livewire\PprCatalogue::class)->name('catalogue.ppr');
+Route::get('/catalogue/pmr', \App\Livewire\PmrCatalogue::class)->name('catalogue.pmr');
 
 Route::get('/reports/{report:slug}', [\App\Http\Controllers\ReportController::class, 'show'])->name('reports.show');
 
