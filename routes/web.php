@@ -8,7 +8,7 @@ Route::get('/catalogue/far', \App\Livewire\FarCatalogue::class)->name('catalogue
 Route::get('/catalogue/ppr', [\App\Http\Controllers\CatalogueController::class, 'ppr'])->name('catalogue.ppr');
 Route::get('/catalogue/pmr', [\App\Http\Controllers\CatalogueController::class, 'pmr'])->name('catalogue.pmr');
 
-Route::get('/reports/{report:slug}', fn () => abort(404))->name('reports.show');
+Route::get('/reports/{report:slug}', [\App\Http\Controllers\ReportController::class, 'show'])->name('reports.show');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
