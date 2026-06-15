@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Enums\ReportType;
 use App\Models\Charity;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
@@ -13,6 +14,8 @@ use Livewire\WithPagination;
 class FarCatalogue extends Component
 {
     use WithPagination;
+
+    private const SORTABLE = ['name', 'latest_q_score', 'latest_stability'];
 
     #[Url]
     public string $search = '';
@@ -44,7 +47,7 @@ class FarCatalogue extends Component
 
     public function sortBy(string $field): void
     {
-        if (! in_array($field, ['name', 'latest_q_score', 'latest_stability'], true)) {
+        if (! in_array($field, self::SORTABLE, true)) {
             return;
         }
 
@@ -58,8 +61,10 @@ class FarCatalogue extends Component
 
     public function render(): View
     {
+        $sortField = in_array($this->sortField, self::SORTABLE, true) ? $this->sortField : 'name';
+
         $charities = Charity::query()
-            ->whereHas('report', fn ($q) => $q->where('type', 'far'))
+            ->whereHas('report', fn ($q) => $q->where('type', ReportType::FAR))
             ->with('report:id,charity_id,slug')
             ->when($this->search !== '', function ($q) {
                 $term = '%'.$this->search.'%';
@@ -69,7 +74,7 @@ class FarCatalogue extends Component
             ->when($this->qMax !== null, fn ($q) => $q->where('latest_q_score', '<=', $this->qMax))
             ->when($this->stabilityMin !== null, fn ($q) => $q->where('latest_stability', '>=', $this->stabilityMin))
             ->when($this->stabilityMax !== null, fn ($q) => $q->where('latest_stability', '<=', $this->stabilityMax))
-            ->orderBy($this->sortField, $this->sortDir === 'desc' ? 'desc' : 'asc')
+            ->orderBy($sortField, $this->sortDir === 'desc' ? 'desc' : 'asc')
             ->paginate(20);
 
         return view('livewire.far-catalogue', ['charities' => $charities]);
