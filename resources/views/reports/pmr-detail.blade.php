@@ -20,4 +20,12 @@
             </div>
         @endforeach
     </div>
+
+    @auth
+        @if ($teaser)
+            <p class="mt-4">
+                <a href="{{ route('assets.download', $teaser) }}" class="text-sm text-brand hover:underline">View free sample</a>
+            </p>
+        @endif
+    @endauth
 </x-public>

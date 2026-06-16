@@ -27,4 +27,12 @@
             <a href="{{ route('login') }}" class="rounded bg-brand px-5 py-2 font-medium text-white">Log in to buy</a>
         @endauth
     </div>
+
+    @auth
+        @if ($teaser)
+            <p class="mt-4">
+                <a href="{{ route('assets.download', $teaser) }}" class="text-sm text-brand hover:underline">View free sample</a>
+            </p>
+        @endif
+    @endauth
 </x-public>
