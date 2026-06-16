@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\ImportBatch;
 use App\Services\FarIndexImporter;
-use App\Support\FarIndexCsv;
+use App\Support\FarIndexFile;
 use Illuminate\Console\Command;
 
 class ImportFarIndex extends Command
@@ -23,7 +23,7 @@ class ImportFarIndex extends Command
             return self::FAILURE;
         }
 
-        $rows = FarIndexCsv::read($path);
+        $rows = FarIndexFile::read($path);
 
         $batch = ImportBatch::create([
             'label' => (string) $this->argument('label'),
