@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Enums\AssetType;
+use App\Models\Asset;
 use App\Models\Charity;
 use App\Models\Issue;
 use App\Models\Market;
@@ -57,6 +59,16 @@ class CatalogueDemoSeeder extends Seeder
                 'is_current' => true,
                 'q_score' => null,
                 'stability' => null,
+            ]);
+        });
+
+        Issue::where('is_current', true)->each(function (Issue $issue) {
+            Asset::factory()->for($issue)->create([
+                'type' => AssetType::Teaser,
+                'disk' => 's3',
+                'path' => 'teasers/sample-teaser.pdf',
+                'original_filename' => 'sample-teaser.pdf',
+                'mime' => 'application/pdf',
             ]);
         });
     }
