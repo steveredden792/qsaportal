@@ -10,6 +10,10 @@ Route::get('/catalogue/pmr', \App\Livewire\PmrCatalogue::class)->name('catalogue
 
 Route::get('/reports/{report:slug}', [\App\Http\Controllers\ReportController::class, 'show'])->name('reports.show');
 
+Route::get('/assets/{asset}/download', [\App\Http\Controllers\DownloadController::class, 'show'])
+    ->middleware('auth')
+    ->name('assets.download');
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
