@@ -4,6 +4,11 @@ use App\Models\Charity;
 use App\Models\Report;
 use App\Livewire\PirCatalogue;
 use Livewire\Livewire;
+use App\Models\User;
+
+beforeEach(function () {
+    $this->actingAs(User::factory()->create());
+});
 
 function pirCharity(array $attrs): Charity
 {

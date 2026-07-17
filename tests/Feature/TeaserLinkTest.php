@@ -9,6 +9,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
+beforeEach(function () {
+    $this->actingAs(User::factory()->create());
+});
+
 function farReportWithTeaser(): array
 {
     $report = Report::factory()->pir()->create(['slug' => 'pir-teaser-test']);
@@ -27,10 +31,11 @@ it('shows the sample link to an authenticated user when a teaser exists', functi
         ->assertSee(route('assets.download', $teaser), false);
 });
 
-it('does not show the sample link to guests', function () {
-    [$report, $teaser] = farReportWithTeaser();
+it('does not show the sample link when no teaser exists', function () {
+    $report = Report::factory()->pir()->create(['slug' => 'pir-no-teaser-test']);
+    Issue::factory()->for($report)->create(['is_current' => true]);
 
-    $this->get('/reports/pir-teaser-test')
+    $this->get('/reports/pir-no-teaser-test')
         ->assertOk()
-        ->assertDontSee(route('assets.download', $teaser), false);
+        ->assertDontSee('View free sample');
 });

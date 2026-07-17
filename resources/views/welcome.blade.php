@@ -15,7 +15,11 @@
     </head>
     <body class="antialiased font-sans">
         <nav class="flex gap-3 p-6">
-            <a href="{{ route('catalogue.pir') }}" class="rounded bg-brand px-5 py-2 font-medium text-white">PIR database</a>
+            @auth
+                <a href="{{ route('catalogue.pir') }}" class="rounded bg-brand px-5 py-2 font-medium text-white">PIR database</a>
+            @else
+                <a href="{{ route('register') }}" class="rounded bg-brand px-5 py-2 font-medium text-white">Register free to search the PIR database</a>
+            @endauth
         </nav>
         <div class="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
             <img id="background" class="absolute -left-20 top-0 max-w-[877px]" src="https://laravel.com/assets/img/welcome/background.svg" />

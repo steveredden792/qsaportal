@@ -3,6 +3,11 @@
 use App\Models\Charity;
 use App\Models\Issue;
 use App\Models\Report;
+use App\Models\User;
+
+beforeEach(function () {
+    $this->actingAs(User::factory()->create());
+});
 
 it('shows a PIR detail page with charity data and price', function () {
     $charity = Charity::factory()->create(['name' => 'Oxfam', 'cc_ref' => '1111111', 'latest_q_score' => 60, 'latest_stability' => 50]);

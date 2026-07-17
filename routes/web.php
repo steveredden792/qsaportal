@@ -4,12 +4,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
 
-Route::get('/catalogue/pir', \App\Livewire\PirCatalogue::class)->name('catalogue.pir');
-
-Route::get('/reports/{report:slug}', [\App\Http\Controllers\ReportController::class, 'show'])->name('reports.show');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/catalogue/pir', \App\Livewire\PirCatalogue::class)->name('catalogue.pir');
+    Route::get('/reports/{report:slug}', [\App\Http\Controllers\ReportController::class, 'show'])->name('reports.show');
+});
 
 Route::get('/assets/{asset}/download', [\App\Http\Controllers\DownloadController::class, 'show'])
-    ->middleware('auth')
+    ->middleware(['auth', 'verified'])
     ->name('assets.download');
 
 Route::view('dashboard', 'dashboard')
