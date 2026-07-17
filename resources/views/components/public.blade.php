@@ -13,8 +13,6 @@
             <a href="{{ url('/') }}" class="text-lg font-semibold">QS Analysis</a>
             <nav class="flex items-center gap-4 text-sm">
                 <a href="{{ route('catalogue.far') }}" class="hover:underline">FAR</a>
-                <a href="{{ route('catalogue.ppr') }}" class="hover:underline">PPR</a>
-                <a href="{{ route('catalogue.pmr') }}" class="hover:underline">PMR</a>
                 @auth
                     <a href="{{ route('dashboard') }}" class="hover:underline">Dashboard</a>
                 @else

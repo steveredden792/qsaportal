@@ -13,14 +13,10 @@ it('formats pence as pounds', function () {
 });
 
 it('returns configured prices in pence', function () {
-    expect(Pricing::for('far', 'single'))->toBe(2500)
-        ->and(Pricing::for('ppr', 'standard'))->toBe(5000)
-        ->and(Pricing::for('ppr', 'enhanced'))->toBe(7500)
-        ->and(Pricing::for('ppr', 'premium'))->toBe(10000)
-        ->and(Pricing::for('pmr', 'standard'))->toBe(5000)
-        ->and(Pricing::for('pmr', 'premium'))->toBe(10000);
+    expect(Pricing::for('far', 'single'))->toBe(2500);
 });
 
 it('returns null for an unknown price', function () {
-    expect(Pricing::for('pmr', 'enhanced'))->toBeNull();
+    expect(Pricing::for('far', 'premium'))->toBeNull()
+        ->and(Pricing::for('ppr', 'standard'))->toBeNull();
 });

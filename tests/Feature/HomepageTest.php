@@ -1,9 +1,7 @@
 <?php
 
-it('links to all three catalogues from the homepage', function () {
+it('links to the FAR catalogue from the homepage', function () {
     $this->get('/')
         ->assertOk()
-        ->assertSee(route('catalogue.far'))
-        ->assertSee(route('catalogue.ppr'))
-        ->assertSee(route('catalogue.pmr'));
+        ->assertSee(route('catalogue.far'));
 });
