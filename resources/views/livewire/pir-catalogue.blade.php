@@ -1,5 +1,5 @@
 <div>
-    <h1 class="mb-6 text-2xl font-bold text-brand">Financial Analysis Reports</h1>
+    <h1 class="mb-6 text-2xl font-bold text-brand">Public Information Reports</h1>
 
     <div class="mb-4 grid grid-cols-1 gap-3 md:grid-cols-5">
         <input type="text" wire:model.live.debounce.300ms="search" placeholder="Search charity name or CC ref"

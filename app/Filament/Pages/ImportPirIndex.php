@@ -3,8 +3,8 @@
 namespace App\Filament\Pages;
 
 use App\Models\ImportBatch;
-use App\Services\FarIndexImporter;
-use App\Support\FarIndexFile;
+use App\Services\PirIndexImporter;
+use App\Support\PirIndexFile;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
@@ -15,17 +15,17 @@ use Illuminate\Contracts\Support\Htmlable;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use UnitEnum;
 
-class ImportFarIndex extends Page
+class ImportPirIndex extends Page
 {
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-arrow-up-tray';
 
-    protected static ?string $navigationLabel = 'Import FAR index';
+    protected static ?string $navigationLabel = 'Import PIR index';
 
     protected static string | UnitEnum | null $navigationGroup = 'Data';
 
-    protected static ?string $title = 'Import FAR Index';
+    protected static ?string $title = 'Import PIR Index';
 
-    protected string $view = 'filament.pages.import-far-index';
+    protected string $view = 'filament.pages.import-pir-index';
 
     protected function getHeaderActions(): array
     {
@@ -34,12 +34,12 @@ class ImportFarIndex extends Page
                 ->label('Upload & Import')
                 ->icon('heroicon-o-arrow-up-tray')
                 ->color('primary')
-                ->modalHeading('Import FAR Index File')
-                ->modalDescription('Upload a .csv or .xlsx FAR index file and enter the issue label.')
+                ->modalHeading('Import PIR Index File')
+                ->modalDescription('Upload a .csv or .xlsx PIR index file and enter the issue label.')
                 ->modalSubmitActionLabel('Import')
                 ->form([
                     FileUpload::make('file')
-                        ->label('FAR Index File (.csv or .xlsx)')
+                        ->label('PIR Index File (.csv or .xlsx)')
                         ->acceptedFileTypes([
                             'text/csv',
                             'text/plain',
@@ -54,16 +54,16 @@ class ImportFarIndex extends Page
                         ->required()
                         ->maxLength(255),
                 ])
-                ->action(function (array $data, FarIndexImporter $importer): void {
+                ->action(function (array $data, PirIndexImporter $importer): void {
                     /** @var TemporaryUploadedFile $file */
                     $file = $data['file'];
                     $path = $file->getRealPath();
 
-                    $rows = FarIndexFile::read($path);
+                    $rows = PirIndexFile::read($path);
 
                     $batch = ImportBatch::create([
                         'label' => $data['label'],
-                        'type' => 'far_index',
+                        'type' => 'pir_index',
                         'status' => 'pending',
                     ]);
 
@@ -90,15 +90,15 @@ class ImportFarIndex extends Page
      */
     public function runImport(string $path, string $label): ImportBatch
     {
-        $rows = FarIndexFile::read($path);
+        $rows = PirIndexFile::read($path);
 
         $batch = ImportBatch::create([
             'label' => $label,
-            'type' => 'far_index',
+            'type' => 'pir_index',
             'status' => 'pending',
         ]);
 
-        $importer = app(FarIndexImporter::class);
+        $importer = app(PirIndexImporter::class);
         $importer->import($batch, $rows);
         $batch->refresh();
 

@@ -12,7 +12,7 @@
         <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
             <a href="{{ url('/') }}" class="text-lg font-semibold">QS Analysis</a>
             <nav class="flex items-center gap-4 text-sm">
-                <a href="{{ route('catalogue.far') }}" class="hover:underline">FAR</a>
+                <a href="{{ route('catalogue.pir') }}" class="hover:underline">PIR</a>
                 @auth
                     <a href="{{ route('dashboard') }}" class="hover:underline">Dashboard</a>
                 @else

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
 
-Route::get('/catalogue/far', \App\Livewire\FarCatalogue::class)->name('catalogue.far');
+Route::get('/catalogue/pir', \App\Livewire\PirCatalogue::class)->name('catalogue.pir');
 
 Route::get('/reports/{report:slug}', [\App\Http\Controllers\ReportController::class, 'show'])->name('reports.show');
 

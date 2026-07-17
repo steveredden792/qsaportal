@@ -6,9 +6,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('imports a FAR index csv via the artisan command', function () {
-    $this->artisan('import:far-index', [
-        'path' => base_path('tests/fixtures/far-index-sample.csv'),
+it('imports a PIR index csv via the artisan command', function () {
+    $this->artisan('import:pir-index', [
+        'path' => base_path('tests/fixtures/pir-index-sample.csv'),
         'label' => '2026 H1',
     ])->assertSuccessful();
 
@@ -22,7 +22,7 @@ it('imports a FAR index csv via the artisan command', function () {
 });
 
 it('fails cleanly when the file is missing', function () {
-    $this->artisan('import:far-index', ['path' => '/no/such/file.csv', 'label' => '2026 H1'])
+    $this->artisan('import:pir-index', ['path' => '/no/such/file.csv', 'label' => '2026 H1'])
         ->assertFailed();
 
     expect(ImportBatch::count())->toBe(0);

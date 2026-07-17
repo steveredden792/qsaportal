@@ -1,5 +1,5 @@
 <x-public :title="$charity->name">
-    <a href="{{ route('catalogue.far') }}" class="text-sm text-brand hover:underline">&larr; Back to FAR catalogue</a>
+    <a href="{{ route('catalogue.pir') }}" class="text-sm text-brand hover:underline">&larr; Back to PIR database</a>
     <h1 class="mt-2 text-2xl font-bold text-brand">{{ $charity->name }}</h1>
     <p class="text-gray-600">Charity Commission ref: {{ $charity->cc_ref }}</p>
 

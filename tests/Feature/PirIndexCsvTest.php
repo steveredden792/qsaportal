@@ -1,9 +1,9 @@
 <?php
 
-use App\Support\FarIndexCsv;
+use App\Support\PirIndexCsv;
 
-it('reads and normalises a FAR index csv', function () {
-    $rows = FarIndexCsv::read(base_path('tests/fixtures/far-index-sample.csv'));
+it('reads and normalises a PIR index csv', function () {
+    $rows = PirIndexCsv::read(base_path('tests/fixtures/pir-index-sample.csv'));
 
     expect($rows)->toHaveCount(2);
     expect($rows[0])->toMatchArray([

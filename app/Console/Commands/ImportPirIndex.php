@@ -3,17 +3,17 @@
 namespace App\Console\Commands;
 
 use App\Models\ImportBatch;
-use App\Services\FarIndexImporter;
-use App\Support\FarIndexFile;
+use App\Services\PirIndexImporter;
+use App\Support\PirIndexFile;
 use Illuminate\Console\Command;
 
-class ImportFarIndex extends Command
+class ImportPirIndex extends Command
 {
-    protected $signature = 'import:far-index {path : Path to the FAR index CSV} {label : Issue label, e.g. "2026 H1"}';
+    protected $signature = 'import:pir-index {path : Path to the PIR index CSV} {label : Issue label, e.g. "2026 H1"}';
 
-    protected $description = 'Import a FAR index CSV: upsert charities, FAR reports and the current issue.';
+    protected $description = 'Import a PIR index CSV: upsert charities, PIR reports and the current issue.';
 
-    public function handle(FarIndexImporter $importer): int
+    public function handle(PirIndexImporter $importer): int
     {
         $path = (string) $this->argument('path');
 
@@ -23,11 +23,11 @@ class ImportFarIndex extends Command
             return self::FAILURE;
         }
 
-        $rows = FarIndexFile::read($path);
+        $rows = PirIndexFile::read($path);
 
         $batch = ImportBatch::create([
             'label' => (string) $this->argument('label'),
-            'type' => 'far_index',
+            'type' => 'pir_index',
             'status' => 'pending',
         ]);
 

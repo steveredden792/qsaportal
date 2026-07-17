@@ -9,10 +9,10 @@ use App\Models\Issue;
 use App\Models\Report;
 use Illuminate\Support\Facades\DB;
 
-class FarIndexImporter
+class PirIndexImporter
 {
     /**
-     * Upsert charities, FAR reports and a current issue from normalised index rows.
+     * Upsert charities, PIR reports and a current issue from normalised index rows.
      *
      * @param  iterable<array{cc_ref:string,name:string,q_score:float|null,stability:float|null}>  $rows
      */

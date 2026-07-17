@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('import_batches', function (Blueprint $table) {
             $table->id();
             $table->string('label');
-            $table->string('type')->default('far_index');
+            $table->string('type')->default('pir_index');
             $table->string('status')->default('pending');
             $table->unsignedInteger('rows')->default(0);
             $table->unsignedInteger('charities_created')->default(0);

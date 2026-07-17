@@ -4,10 +4,10 @@ namespace App\Support;
 
 use League\Csv\Reader;
 
-class FarIndexCsv
+class PirIndexCsv
 {
     /**
-     * Read a FAR index CSV into normalised rows keyed cc_ref/name/q_score/stability.
+     * Read a PIR index CSV into normalised rows keyed cc_ref/name/q_score/stability.
      * Header matching is case- and punctuation-insensitive.
      *
      * @return array<int, array{cc_ref:string,name:string,q_score:float|null,stability:float|null}>

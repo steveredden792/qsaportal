@@ -1,7 +1,7 @@
 <?php
 
-it('links to the FAR catalogue from the homepage', function () {
+it('links to the PIR database from the homepage', function () {
     $this->get('/')
         ->assertOk()
-        ->assertSee(route('catalogue.far'));
+        ->assertSee(route('catalogue.pir'));
 });

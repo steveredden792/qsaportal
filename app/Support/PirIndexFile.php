@@ -5,11 +5,11 @@ namespace App\Support;
 use OpenSpout\Reader\XLSX\Reader as XlsxReader;
 use OpenSpout\Common\Entity\Row;
 
-class FarIndexFile
+class PirIndexFile
 {
     /**
-     * Read a FAR index file (CSV or XLSX) into normalised rows.
-     * Dispatches by extension: .csv → FarIndexCsv::read(); .xlsx → OpenSpout reader.
+     * Read a PIR index file (CSV or XLSX) into normalised rows.
+     * Dispatches by extension: .csv → PirIndexCsv::read(); .xlsx → OpenSpout reader.
      *
      * @return array<int, array{cc_ref:string,name:string,q_score:float|null,stability:float|null}>
      */
@@ -18,7 +18,7 @@ class FarIndexFile
         $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
         if ($extension === 'csv') {
-            return FarIndexCsv::read($path);
+            return PirIndexCsv::read($path);
         }
 
         return self::readXlsx($path);
@@ -80,7 +80,7 @@ class FarIndexFile
     }
 
     /**
-     * Shared header normalisation map (same as FarIndexCsv).
+     * Shared header normalisation map (same as PirIndexCsv).
      *
      * @return array<string, string>
      */

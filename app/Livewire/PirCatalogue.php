@@ -11,7 +11,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('components.public')]
-class FarCatalogue extends Component
+class PirCatalogue extends Component
 {
     use WithPagination;
 
@@ -77,6 +77,6 @@ class FarCatalogue extends Component
             ->orderBy($sortField, $this->sortDir === 'desc' ? 'desc' : 'asc')
             ->paginate(20);
 
-        return view('livewire.far-catalogue', ['charities' => $charities]);
+        return view('livewire.pir-catalogue', ['charities' => $charities]);
     }
 }

@@ -10,7 +10,7 @@ class ImportBatchFactory extends Factory
     {
         return [
             'label' => '2026 H1',
-            'type' => 'far_index',
+            'type' => 'pir_index',
             'status' => 'pending',
         ];
     }

@@ -19,12 +19,12 @@ class ReportController extends Controller
             abort(404);
         }
 
-        return view('reports.far-detail', [
+        return view('reports.pir-detail', [
             'report' => $report,
             'charity' => $report->charity,
             'issue' => $report->currentIssue,
             'teaser' => $teaser,
-            'price' => Pricing::for('far', 'single'),
+            'price' => Pricing::for('pir', 'single'),
         ]);
     }
 }

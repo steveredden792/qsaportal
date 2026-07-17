@@ -3,7 +3,7 @@
 use App\Enums\ReportType;
 use App\Models\Charity;
 use App\Models\ImportBatch;
-use App\Services\FarIndexImporter;
+use App\Services\PirIndexImporter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -11,7 +11,7 @@ uses(RefreshDatabase::class);
 it('creates a charity, PIR report and current issue from a new row', function () {
     $batch = ImportBatch::factory()->create(['label' => '2026 H1']);
 
-    (new FarIndexImporter)->import($batch, [
+    (new PirIndexImporter)->import($batch, [
         ['cc_ref' => '1234567', 'name' => 'Acme Trust', 'q_score' => 55.5, 'stability' => 60.0],
     ]);
 
@@ -34,13 +34,13 @@ it('creates a charity, PIR report and current issue from a new row', function ()
 });
 
 it('updates an existing charity and flips the current issue on a new batch', function () {
-    (new FarIndexImporter)->import(
+    (new PirIndexImporter)->import(
         ImportBatch::factory()->create(['label' => '2025 H2']),
         [['cc_ref' => '1234567', 'name' => 'Old Name', 'q_score' => 40.0, 'stability' => 50.0]],
     );
 
     $b2 = ImportBatch::factory()->create(['label' => '2026 H1']);
-    (new FarIndexImporter)->import($b2, [
+    (new PirIndexImporter)->import($b2, [
         ['cc_ref' => '1234567', 'name' => 'New Name', 'q_score' => 70.0, 'stability' => 80.0],
     ]);
 
@@ -59,7 +59,7 @@ it('updates an existing charity and flips the current issue on a new batch', fun
 it('skips rows with a blank cc_ref', function () {
     $batch = ImportBatch::factory()->create(['label' => '2026 H1']);
 
-    (new FarIndexImporter)->import($batch, [
+    (new PirIndexImporter)->import($batch, [
         ['cc_ref' => '', 'name' => 'No Ref', 'q_score' => 1.0, 'stability' => 2.0],
     ]);
 
