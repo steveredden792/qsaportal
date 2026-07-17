@@ -18,5 +18,5 @@ it('returns configured prices in pence', function () {
 
 it('returns null for an unknown price', function () {
     expect(Pricing::for('far', 'premium'))->toBeNull()
-        ->and(Pricing::for('ppr', 'standard'))->toBeNull();
+        ->and(Pricing::for('unknown', 'standard'))->toBeNull();
 });

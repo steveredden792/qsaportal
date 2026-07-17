@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->string('type'); // ReportType: far|ppr|pmr
+            $table->string('type'); // ReportType: pir|far
             $table->foreignId('charity_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('provider_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('market_id')->nullable()->constrained()->cascadeOnDelete();

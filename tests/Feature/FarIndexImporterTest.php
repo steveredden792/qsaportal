@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('creates a charity, FAR report and current issue from a new row', function () {
+it('creates a charity, PIR report and current issue from a new row', function () {
     $batch = ImportBatch::factory()->create(['label' => '2026 H1']);
 
     (new FarIndexImporter)->import($batch, [
