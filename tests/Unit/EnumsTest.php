@@ -3,11 +3,10 @@
 use App\Enums\AssetType;
 use App\Enums\ReportType;
 
-it('exposes the three report types', function () {
-    expect(ReportType::cases())->toHaveCount(3);
+it('exposes the two report types', function () {
+    expect(ReportType::cases())->toHaveCount(2);
+    expect(ReportType::PIR->value)->toBe('pir');
     expect(ReportType::FAR->value)->toBe('far');
-    expect(ReportType::PPR->value)->toBe('ppr');
-    expect(ReportType::PMR->value)->toBe('pmr');
 });
 
 it('exposes the asset types', function () {

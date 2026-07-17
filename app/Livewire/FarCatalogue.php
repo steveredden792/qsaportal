@@ -64,7 +64,7 @@ class FarCatalogue extends Component
         $sortField = in_array($this->sortField, self::SORTABLE, true) ? $this->sortField : 'name';
 
         $charities = Charity::query()
-            ->whereHas('report', fn ($q) => $q->where('type', ReportType::FAR))
+            ->whereHas('report', fn ($q) => $q->where('type', ReportType::PIR))
             ->with('report:id,charity_id,slug')
             ->when($this->search !== '', function ($q) {
                 $term = '%'.$this->search.'%';

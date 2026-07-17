@@ -14,7 +14,7 @@ class Report extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['type', 'charity_id', 'provider_id', 'market_id', 'name', 'slug'];
+    protected $fillable = ['type', 'charity_id', 'provider_id', 'name', 'slug', 'tier'];
 
     protected function casts(): array
     {
@@ -26,12 +26,11 @@ class Report extends Model
         static::saving(function (Report $report): void {
             $type = $report->type instanceof ReportType ? $report->type : ReportType::from($report->type);
             $required = match ($type) {
-                ReportType::FAR => 'charity_id',
-                ReportType::PPR => 'provider_id',
-                ReportType::PMR => 'market_id',
+                ReportType::PIR => 'charity_id',
+                ReportType::FAR => 'provider_id',
             };
 
-            foreach (['charity_id', 'provider_id', 'market_id'] as $column) {
+            foreach (['charity_id', 'provider_id'] as $column) {
                 if ($column === $required && empty($report->{$column})) {
                     throw new InvalidArgumentException("A {$type->value} report requires {$column}.");
                 }
@@ -52,11 +51,6 @@ class Report extends Model
         return $this->belongsTo(Provider::class);
     }
 
-    public function market(): BelongsTo
-    {
-        return $this->belongsTo(Market::class);
-    }
-
     public function issues(): HasMany
     {
         return $this->hasMany(Issue::class);
@@ -67,12 +61,11 @@ class Report extends Model
         return $this->hasOne(Issue::class)->where('is_current', true);
     }
 
-    public function subject(): Charity|Provider|Market|null
+    public function subject(): Charity|Provider|null
     {
         return match ($this->type) {
-            ReportType::FAR => $this->charity,
-            ReportType::PPR => $this->provider,
-            ReportType::PMR => $this->market,
+            ReportType::PIR => $this->charity,
+            ReportType::FAR => $this->provider,
         };
     }
 }

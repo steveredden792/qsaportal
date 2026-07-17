@@ -16,9 +16,10 @@ class CatalogueDemoSeeder extends Seeder
         $charities = Charity::factory(60)->create();
 
         $charities->each(function (Charity $charity) {
-            $report = Report::factory()->far()->for($charity)->create([
-                'name' => $charity->name.' — Financial Analysis Report',
-                'slug' => 'far-'.$charity->cc_ref,
+            $report = Report::factory()->pir()->create([
+                'charity_id' => $charity->id,
+                'name' => $charity->name.' — Public Information Report',
+                'slug' => 'pir-'.$charity->cc_ref,
             ]);
             Issue::factory()->for($report)->create([
                 'version_label' => '2026 H1',

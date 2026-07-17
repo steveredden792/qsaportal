@@ -8,7 +8,7 @@ use Livewire\Livewire;
 function farCharity(array $attrs): Charity
 {
     $charity = Charity::factory()->create($attrs);
-    Report::factory()->far()->for($charity)->create(['slug' => 'far-'.$charity->cc_ref]);
+    Report::factory()->pir()->create(['charity_id' => $charity->id, 'slug' => 'pir-'.$charity->cc_ref]);
 
     return $charity;
 }

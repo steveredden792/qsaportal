@@ -3,15 +3,15 @@
 namespace Database\Factories;
 
 use App\Models\Charity;
-use App\Models\Provider;
+use App\Models\Issue;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ProviderCharityLinkFactory extends Factory
+class FarPirReferenceFactory extends Factory
 {
     public function definition(): array
     {
         return [
-            'provider_id' => Provider::factory(),
+            'issue_id' => Issue::factory(),
             'charity_id' => Charity::factory(),
         ];
     }

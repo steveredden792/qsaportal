@@ -15,7 +15,7 @@ class ReportController extends Controller
         $report->load('charity', 'currentIssue.assets');
         $teaser = $report->currentIssue?->assets->firstWhere('type', AssetType::Teaser);
 
-        if ($report->type !== ReportType::FAR) {
+        if ($report->type !== ReportType::PIR) {
             abort(404);
         }
 

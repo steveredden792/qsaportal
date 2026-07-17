@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Charity extends Model
@@ -24,10 +23,5 @@ class Charity extends Model
     public function report(): HasOne
     {
         return $this->hasOne(Report::class);
-    }
-
-    public function providers(): BelongsToMany
-    {
-        return $this->belongsToMany(Provider::class, 'provider_charity_links');
     }
 }

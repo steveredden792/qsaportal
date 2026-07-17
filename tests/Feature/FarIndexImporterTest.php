@@ -20,7 +20,7 @@ it('creates a charity, FAR report and current issue from a new row', function ()
         ->and($charity->name)->toBe('Acme Trust');
 
     $report = $charity->report;
-    expect($report->type)->toBe(ReportType::FAR);
+    expect($report->type)->toBe(ReportType::PIR);
 
     $issue = $report->currentIssue;
     expect($issue->version_label)->toBe('2026 H1')

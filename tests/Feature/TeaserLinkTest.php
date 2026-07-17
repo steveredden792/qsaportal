@@ -2,7 +2,6 @@
 
 use App\Enums\AssetType;
 use App\Models\Asset;
-use App\Models\Charity;
 use App\Models\Issue;
 use App\Models\Report;
 use App\Models\User;
@@ -12,7 +11,7 @@ uses(RefreshDatabase::class);
 
 function farReportWithTeaser(): array
 {
-    $report = Report::factory()->far()->for(Charity::factory())->create(['slug' => 'far-teaser-test']);
+    $report = Report::factory()->pir()->create(['slug' => 'pir-teaser-test']);
     $issue = Issue::factory()->for($report)->create(['is_current' => true]);
     $teaser = Asset::factory()->for($issue)->create(['type' => AssetType::Teaser]);
 
@@ -23,7 +22,7 @@ it('shows the sample link to an authenticated user when a teaser exists', functi
     [$report, $teaser] = farReportWithTeaser();
 
     $this->actingAs(User::factory()->create())
-        ->get('/reports/far-teaser-test')
+        ->get('/reports/pir-teaser-test')
         ->assertOk()
         ->assertSee(route('assets.download', $teaser), false);
 });
@@ -31,7 +30,7 @@ it('shows the sample link to an authenticated user when a teaser exists', functi
 it('does not show the sample link to guests', function () {
     [$report, $teaser] = farReportWithTeaser();
 
-    $this->get('/reports/far-teaser-test')
+    $this->get('/reports/pir-teaser-test')
         ->assertOk()
         ->assertDontSee(route('assets.download', $teaser), false);
 });

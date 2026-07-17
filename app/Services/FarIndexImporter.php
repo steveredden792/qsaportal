@@ -50,8 +50,8 @@ class FarIndexImporter
                 }
 
                 $report = Report::firstOrCreate(
-                    ['type' => ReportType::FAR, 'charity_id' => $charity->id],
-                    ['name' => $charity->name.' — Financial Analysis Report', 'slug' => 'far-'.$ccRef],
+                    ['type' => ReportType::PIR, 'charity_id' => $charity->id],
+                    ['name' => $charity->name.' — Public Information Report', 'slug' => 'pir-'.$ccRef],
                 );
 
                 $existing = Issue::where('report_id', $report->id)

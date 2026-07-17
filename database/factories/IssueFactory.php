@@ -10,7 +10,7 @@ class IssueFactory extends Factory
     public function definition(): array
     {
         return [
-            'report_id' => Report::factory()->far(),
+            'report_id' => Report::factory()->pir(),
             'version_label' => fake()->unique()->numerify('20## H#'),
             'published_at' => fake()->dateTimeBetween('-1 year', 'now'),
             'is_current' => true,
