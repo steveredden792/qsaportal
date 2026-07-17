@@ -39,3 +39,13 @@ it('does not show the sample link when no teaser exists', function () {
         ->assertOk()
         ->assertDontSee('View free sample');
 });
+
+it('does not expose the sample link to guests', function () {
+    auth()->logout();
+
+    $report = Report::factory()->pir()->create(['slug' => 'pir-7777777']);
+    $issue = Issue::factory()->for($report)->create(['is_current' => true]);
+    Asset::factory()->for($issue)->create(['type' => AssetType::Teaser]);
+
+    $this->get('/reports/pir-7777777')->assertRedirect(route('login'));
+});
