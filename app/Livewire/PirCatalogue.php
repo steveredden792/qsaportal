@@ -65,7 +65,7 @@ class PirCatalogue extends Component
 
         $charities = Charity::query()
             ->whereHas('report', fn ($q) => $q->where('type', ReportType::PIR))
-            ->with('report:id,charity_id,slug')
+            ->with('report:id,charity_id,type,slug,name')
             ->when($this->search !== '', function ($q) {
                 $term = '%'.$this->search.'%';
                 $q->where(fn ($sub) => $sub->where('name', 'like', $term)->orWhere('cc_ref', 'like', $term));

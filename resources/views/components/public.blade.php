@@ -14,6 +14,7 @@
             <nav class="flex items-center gap-4 text-sm">
                 <a href="{{ route('catalogue.pir') }}" class="hover:underline">PIR</a>
                 @auth
+                    <livewire:basket-badge />
                     <a href="{{ route('dashboard') }}" class="hover:underline">Dashboard</a>
                 @else
                     <a href="{{ route('login') }}" class="hover:underline">Log in</a>

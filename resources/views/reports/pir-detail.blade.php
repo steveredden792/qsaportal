@@ -21,12 +21,26 @@
 
     <div class="mt-6 flex items-center gap-4">
         <span class="text-2xl font-bold">{{ \App\Support\Money::format($price) }}</span>
-        @auth
-            <button class="rounded bg-brand px-5 py-2 font-medium text-white" disabled title="Checkout arrives in M2">Buy now</button>
-        @else
-            <a href="{{ route('login') }}" class="rounded bg-brand px-5 py-2 font-medium text-white">Log in to buy</a>
-        @endauth
+        <livewire:add-to-basket :report="$report" />
     </div>
+
+    @if ($ownedEntitlements->isNotEmpty())
+        <div class="mt-4 text-sm text-gray-700">
+            <h2 class="font-semibold">Your purchased issues</h2>
+            <ul class="mt-1 space-y-1">
+                @foreach ($ownedEntitlements as $entitlement)
+                    @php $pdf = $entitlement->issue->assets->firstWhere('type', \App\Enums\AssetType::ReportPdf); @endphp
+                    <li>
+                        {{ $entitlement->issue->version_label }} —
+                        @if ($pdf)
+                            <a href="{{ route('assets.download', $pdf) }}" class="text-brand hover:underline">Download</a>
+                        @endif
+                        <span class="text-gray-500">(expires {{ $entitlement->expires_at->format('j M Y') }})</span>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
     @auth
         @if ($teaser)

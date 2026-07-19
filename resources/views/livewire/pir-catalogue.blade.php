@@ -31,6 +31,7 @@
                         <td class="px-4 py-2 text-right">
                             <a href="{{ route('reports.show', $charity->report->slug) }}"
                                class="text-brand hover:underline">View report</a>
+                            <livewire:add-to-basket :report="$charity->report" :key="'atb-'.$charity->id" />
                         </td>
                     </tr>
                 @empty
