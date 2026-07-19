@@ -5,7 +5,9 @@ namespace Database\Seeders;
 use App\Enums\AssetType;
 use App\Models\Asset;
 use App\Models\Charity;
+use App\Models\FarPirReference;
 use App\Models\Issue;
+use App\Models\Provider;
 use App\Models\Report;
 use Illuminate\Database\Seeder;
 
@@ -37,6 +39,24 @@ class CatalogueDemoSeeder extends Seeder
                 'original_filename' => 'sample-teaser.pdf',
                 'mime' => 'application/pdf',
             ]);
+        });
+
+        Provider::factory(5)->create()->each(function (Provider $provider) use ($charities) {
+            $report = Report::factory()->far()->for($provider)->create([
+                'name' => $provider->name.' — Financial Analysis Report',
+                'slug' => 'far-'.\Illuminate\Support\Str::slug($provider->code),
+                'tier' => fake()->randomElement(config('reports.far_tiers')),
+            ]);
+            $issue = Issue::factory()->for($report)->create([
+                'version_label' => '2026 H1',
+                'is_current' => true,
+                'q_score' => null,
+                'stability' => null,
+            ]);
+            $charities->random(4)->each(fn ($c) => FarPirReference::firstOrCreate([
+                'issue_id' => $issue->id,
+                'charity_id' => $c->id,
+            ]));
         });
     }
 }
