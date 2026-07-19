@@ -11,7 +11,6 @@ class ImportBatchFactory extends Factory
         return [
             'label' => '2026 H1',
             'type' => 'pir_index',
-            'status' => 'pending',
         ];
     }
 }

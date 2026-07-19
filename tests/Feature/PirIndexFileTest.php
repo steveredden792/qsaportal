@@ -18,6 +18,19 @@ it('reads the CSV fixture via PirIndexFile', function () {
         ->and($rows[1]['q_score'])->toBe(42.1);
 });
 
+it('reads the filename column', function () {
+    $csv = tempnam(sys_get_temp_dir(), 'pir').'.csv';
+    file_put_contents($csv, "CC Ref,Charity Name,Q Score,Stability,Filename\n1111111,Oxfam,61.5,55.0,oxfam-1111111.pdf\n");
+
+    $rows = PirIndexFile::read($csv);
+
+    @unlink($csv);
+
+    expect($rows)->toHaveCount(1)
+        ->and($rows[0]['cc_ref'])->toBe('1111111')
+        ->and($rows[0]['filename'])->toBe('oxfam-1111111.pdf');
+});
+
 it('reads an XLSX file via PirIndexFile', function () {
     // Generate a small XLSX in a temp file
     $path = sys_get_temp_dir() . '/pir-index-test-' . uniqid() . '.xlsx';

@@ -9,9 +9,9 @@ use Illuminate\Console\Command;
 
 class ImportPirIndex extends Command
 {
-    protected $signature = 'import:pir-index {path : Path to the PIR index CSV} {label : Issue label, e.g. "2026 H1"}';
+    protected $signature = 'import:pir-index {path : Path to the PIR index CSV/XLSX} {label : Issue label, e.g. "2026 H2"} {folder : S3 publication folder, e.g. 2026-07}';
 
-    protected $description = 'Import a PIR index CSV: upsert charities, PIR reports and the current issue.';
+    protected $description = 'Validate and publish a PIR index: upsert charities, PIR reports, current issues and PDF assets.';
 
     public function handle(PirIndexImporter $importer): int
     {
@@ -23,18 +23,25 @@ class ImportPirIndex extends Command
             return self::FAILURE;
         }
 
-        $rows = PirIndexFile::read($path);
-
         $batch = ImportBatch::create([
             'label' => (string) $this->argument('label'),
             'type' => 'pir_index',
-            'status' => 'pending',
+            'folder' => (string) $this->argument('folder'),
         ]);
 
-        $importer->import($batch, $rows);
+        $importer->import($batch, PirIndexFile::read($path));
         $batch->refresh();
 
-        $this->info("Imported '{$batch->label}': {$batch->rows} rows — {$batch->charities_created} charities created, {$batch->charities_updated} updated, {$batch->issues_created} issues created.");
+        if ($batch->status === 'failed') {
+            $this->error("Validation failed for '{$batch->label}' — nothing imported:");
+            foreach ($batch->errors as $error) {
+                $this->line("  row {$error['row']}: {$error['error']}");
+            }
+
+            return self::FAILURE;
+        }
+
+        $this->info("Published '{$batch->label}': {$batch->rows} rows — {$batch->charities_created} charities created, {$batch->charities_updated} updated, {$batch->issues_created} issues created.");
 
         return self::SUCCESS;
     }

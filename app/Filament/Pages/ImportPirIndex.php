@@ -53,6 +53,11 @@ class ImportPirIndex extends Page
                         ->placeholder('e.g. 2026 H1')
                         ->required()
                         ->maxLength(255),
+                    TextInput::make('folder')
+                        ->label('S3 publication folder')
+                        ->placeholder('e.g. 2026-07')
+                        ->required()
+                        ->maxLength(255),
                 ])
                 ->action(function (array $data, PirIndexImporter $importer): void {
                     /** @var TemporaryUploadedFile $file */
@@ -64,11 +69,21 @@ class ImportPirIndex extends Page
                     $batch = ImportBatch::create([
                         'label' => $data['label'],
                         'type' => 'pir_index',
-                        'status' => 'pending',
+                        'folder' => $data['folder'],
                     ]);
 
                     $importer->import($batch, $rows);
                     $batch->refresh();
+
+                    if ($batch->status === 'failed') {
+                        Notification::make()
+                            ->danger()
+                            ->title("Validation failed: {$batch->label}")
+                            ->body(collect($batch->errors)->map(fn ($e) => "Row {$e['row']}: {$e['error']}")->implode('; '))
+                            ->send();
+
+                        return;
+                    }
 
                     Notification::make()
                         ->success()
@@ -88,14 +103,14 @@ class ImportPirIndex extends Page
      * Run the import directly from a file path and label (used in tests
      * and CLI tooling to bypass the Livewire upload mechanism).
      */
-    public function runImport(string $path, string $label): ImportBatch
+    public function runImport(string $path, string $label, string $folder): ImportBatch
     {
         $rows = PirIndexFile::read($path);
 
         $batch = ImportBatch::create([
             'label' => $label,
             'type' => 'pir_index',
-            'status' => 'pending',
+            'folder' => $folder,
         ]);
 
         $importer = app(PirIndexImporter::class);
