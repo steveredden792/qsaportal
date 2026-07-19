@@ -33,8 +33,10 @@
         </div>
 
         <div class="mt-6">
-            {{-- Replaced with the real checkout form in the checkout task --}}
-            <button class="rounded bg-brand px-5 py-2 font-medium text-white" disabled title="Checkout arrives next">Checkout</button>
+            <form method="POST" action="{{ route('checkout.store') }}">
+                @csrf
+                <button type="submit" class="rounded bg-brand px-5 py-2 font-medium text-white">Checkout</button>
+            </form>
         </div>
     @endif
 </div>

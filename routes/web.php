@@ -8,6 +8,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/catalogue/pir', \App\Livewire\PirCatalogue::class)->name('catalogue.pir');
     Route::get('/reports/{report:slug}', [\App\Http\Controllers\ReportController::class, 'show'])->name('reports.show');
     Route::get('/basket', \App\Livewire\BasketPage::class)->name('basket.show');
+    Route::post('/checkout', [\App\Http\Controllers\CheckoutController::class, 'store'])->name('checkout.store');
+    Route::get('/checkout/success/{order}', [\App\Http\Controllers\CheckoutController::class, 'success'])->name('checkout.success');
 });
 
 Route::get('/assets/{asset}/download', [\App\Http\Controllers\DownloadController::class, 'show'])
