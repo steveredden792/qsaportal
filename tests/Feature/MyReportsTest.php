@@ -52,3 +52,60 @@ it('only shows the signed-in users entitlements', function () {
 it('redirects guests to login', function () {
     $this->get(route('my-reports'))->assertRedirect(route('login'));
 });
+
+it('renders revoked entitlement as expired with no download link', function () {
+    $user = User::factory()->create();
+    $revoked = entitledIssue($user, ['revoked_at' => now()]);
+
+    $this->actingAs($user)
+        ->get(route('my-reports'))
+        ->assertOk()
+        ->assertSee('Expired')
+        ->assertSee($revoked->issue->report->name);
+
+    // Verify download link is not shown for revoked entitlement
+    $pdf = $revoked->issue->assets->firstWhere('type', AssetType::ReportPdf);
+    $downloadUrl = route('assets.download', $pdf);
+    $this->actingAs($user)
+        ->get(route('my-reports'))
+        ->assertDontSee($downloadUrl, false);
+});
+
+it('shows download link for active entitlement but not expired', function () {
+    $user = User::factory()->create();
+    $active = entitledIssue($user);
+    $expired = entitledIssue($user, ['expires_at' => now()->subDay()]);
+
+    $activePdf = $active->issue->assets->firstWhere('type', AssetType::ReportPdf);
+    $expiredPdf = $expired->issue->assets->firstWhere('type', AssetType::ReportPdf);
+
+    $activeDownloadUrl = route('assets.download', $activePdf);
+    $expiredDownloadUrl = route('assets.download', $expiredPdf);
+
+    $response = $this->actingAs($user)->get(route('my-reports'));
+
+    $response->assertOk()
+        ->assertSee($activeDownloadUrl, false);
+
+    $response->assertDontSee($expiredDownloadUrl, false);
+});
+
+it('shows expiring soon at 30-day boundary', function () {
+    $user = User::factory()->create();
+    entitledIssue($user, ['expires_at' => now()->addDays(30)]);
+
+    $this->actingAs($user)
+        ->get(route('my-reports'))
+        ->assertOk()
+        ->assertSee('Expiring soon');
+});
+
+it('shows active status at 31-day boundary', function () {
+    $user = User::factory()->create();
+    entitledIssue($user, ['expires_at' => now()->addDays(31)]);
+
+    $this->actingAs($user)
+        ->get(route('my-reports'))
+        ->assertOk()
+        ->assertSee('Active');
+});
