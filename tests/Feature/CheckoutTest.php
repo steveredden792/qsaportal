@@ -62,12 +62,18 @@ it('bounces back naming stale lines without creating anything', function () {
     ]);
     basketReport($this->user);
 
+    // The Entitlement factory's default order_item_id resolves through a nested
+    // OrderItem::factory() -> Order::factory() chain, which creates a real (unrelated)
+    // Order row as a fixture side-effect. Baseline before the request so the assertion
+    // below reflects orders created by checkout.store, not by test setup.
+    $ordersBeforeCheckout = Order::count();
+
     $response = $this->post(route('checkout.store'));
 
     $response->assertRedirect(route('basket.show'))
         ->assertSessionHas('error', fn (string $msg) => str_contains($msg, $owned->name));
 
-    expect(Order::count())->toBe(0)
+    expect(Order::count())->toBe($ordersBeforeCheckout)
         ->and($this->gateway->checkoutSessions)->toBe([]);
 });
 
