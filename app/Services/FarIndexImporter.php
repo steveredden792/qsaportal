@@ -137,7 +137,7 @@ class FarIndexImporter
 
             if ($filename === '') {
                 $errors[] = ['row' => $line, 'error' => 'Missing filename'];
-            } elseif (! Storage::disk('s3')->exists($batch->folder.'/'.$filename)) {
+            } elseif (config('reports.validate_import_files') && ! Storage::disk('s3')->exists($batch->folder.'/'.$filename)) {
                 $errors[] = ['row' => $line, 'error' => "File not found on S3: {$batch->folder}/{$filename}"];
             }
 

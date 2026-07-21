@@ -90,3 +90,14 @@ it('fails without writing on unknown tier, unknown cc ref, missing file, or dupl
         ->and(Report::count())->toBe(0)
         ->and(Issue::count())->toBe(0);
 });
+
+it('publishes without checking s3 when file validation is disabled', function () {
+    config(['reports.validate_import_files' => false]);
+    Storage::fake('s3'); // deliberately empty
+
+    $batch = ImportBatch::create(['label' => '2026 H2', 'type' => 'far_index', 'folder' => '2026-07']);
+
+    $result = app(FarIndexImporter::class)->import($batch, [farRow()]);
+
+    expect($result->status)->toBe('published');
+});

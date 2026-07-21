@@ -120,3 +120,35 @@ it('publishes a valid batch with report pdf assets on the new issues', function 
         ->and($asset->path)->toBe('2026-07/oxfam.pdf')
         ->and($asset->original_filename)->toBe('oxfam.pdf');
 });
+
+it('publishes without checking s3 when file validation is disabled', function () {
+    config(['reports.validate_import_files' => false]);
+    Storage::fake('s3'); // deliberately empty — no files uploaded
+
+    $batch = ImportBatch::create(['label' => '2026 H2', 'type' => 'pir_index', 'folder' => '2026-07']);
+
+    $result = app(PirIndexImporter::class)->import($batch, [
+        ['cc_ref' => '1111111', 'name' => 'Oxfam', 'q_score' => 60.0, 'stability' => 50.0, 'filename' => 'oxfam.pdf'],
+    ]);
+
+    expect($result->status)->toBe('published');
+
+    $asset = Issue::where('is_current', true)->firstOrFail()
+        ->assets()->where('type', AssetType::ReportPdf)->firstOrFail();
+    expect($asset->path)->toBe('2026-07/oxfam.pdf');
+});
+
+it('still fails blank filenames when file validation is disabled', function () {
+    config(['reports.validate_import_files' => false]);
+    Storage::fake('s3');
+
+    $batch = ImportBatch::create(['label' => '2026 H2', 'type' => 'pir_index', 'folder' => '2026-07']);
+
+    $result = app(PirIndexImporter::class)->import($batch, [
+        ['cc_ref' => '1111111', 'name' => 'Oxfam', 'q_score' => null, 'stability' => null, 'filename' => ''],
+    ]);
+
+    expect($result->status)->toBe('failed')
+        ->and($result->errors)->toHaveCount(1)
+        ->and($result->errors[0]['error'])->toBe('Missing filename');
+});
