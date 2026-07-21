@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Models\ImportBatch;
 use App\Services\PirIndexImporter;
+use App\Support\ImportDefaults;
 use App\Support\PirIndexFile;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -11,6 +12,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Utilities\Set;
 use Illuminate\Contracts\Support\Htmlable;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use UnitEnum;
@@ -47,6 +49,21 @@ class ImportPirIndex extends Page
                             'application/vnd.ms-excel',
                         ])
                         ->storeFiles(false)
+                        ->live()
+                        ->afterStateUpdated(function (mixed $state, Set $set): void {
+                            $file = is_array($state) ? reset($state) : $state;
+
+                            if (! $file instanceof TemporaryUploadedFile) {
+                                return;
+                            }
+
+                            $defaults = ImportDefaults::fromFilename($file->getClientOriginalName());
+
+                            if ($defaults !== null) {
+                                $set('label', $defaults['label']);
+                                $set('folder', $defaults['folder']);
+                            }
+                        })
                         ->required(),
                     TextInput::make('label')
                         ->label('Issue Label')
