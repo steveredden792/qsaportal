@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Storage;
 
 class PirIndexImporter
 {
+    private const S3_PREFIX = 'pir';
+
     /**
      * Validate then publish a PIR index. All-or-nothing: any row error
      * fails the batch and nothing is written.
@@ -85,7 +87,7 @@ class PirIndexImporter
                     ['issue_id' => $issue->id, 'type' => AssetType::ReportPdf],
                     [
                         'disk' => 's3',
-                        'path' => $batch->folder.'/'.$row['filename'],
+                        'path' => $this->s3Path($batch, $row['filename']),
                         'original_filename' => $row['filename'],
                         'mime' => 'application/pdf',
                     ],
@@ -132,11 +134,16 @@ class PirIndexImporter
 
             if ($filename === '') {
                 $errors[] = ['row' => $line, 'error' => 'Missing filename'];
-            } elseif (config('reports.validate_import_files') && ! Storage::disk('s3')->exists($batch->folder.'/'.$filename)) {
-                $errors[] = ['row' => $line, 'error' => "File not found on S3: {$batch->folder}/{$filename}"];
+            } elseif (config('reports.validate_import_files') && ! Storage::disk('s3')->exists($this->s3Path($batch, $filename))) {
+                $errors[] = ['row' => $line, 'error' => "File not found on S3: {$this->s3Path($batch, $filename)}"];
             }
         }
 
         return $errors;
+    }
+
+    private function s3Path(ImportBatch $batch, string $filename): string
+    {
+        return self::S3_PREFIX.'/'.$batch->folder.'/'.$filename;
     }
 }

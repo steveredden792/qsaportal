@@ -14,7 +14,7 @@ uses(RefreshDatabase::class);
 
 it('creates a charity, PIR report and current issue from a new row', function () {
     Storage::fake('s3');
-    Storage::disk('s3')->put('2026-07/acme.pdf', 'pdf');
+    Storage::disk('s3')->put('pir/2026-07/acme.pdf', 'pdf');
 
     $batch = ImportBatch::factory()->create(['label' => '2026 H1', 'folder' => '2026-07']);
 
@@ -42,8 +42,8 @@ it('creates a charity, PIR report and current issue from a new row', function ()
 
 it('updates an existing charity and flips the current issue on a new batch', function () {
     Storage::fake('s3');
-    Storage::disk('s3')->put('2025-12/acme.pdf', 'pdf');
-    Storage::disk('s3')->put('2026-07/acme2.pdf', 'pdf');
+    Storage::disk('s3')->put('pir/2025-12/acme.pdf', 'pdf');
+    Storage::disk('s3')->put('pir/2026-07/acme2.pdf', 'pdf');
 
     (new PirIndexImporter)->import(
         ImportBatch::factory()->create(['label' => '2025 H2', 'folder' => '2025-12']),
@@ -69,7 +69,7 @@ it('updates an existing charity and flips the current issue on a new batch', fun
 
 it('fails the batch without writing when a file is missing from S3', function () {
     Storage::fake('s3');
-    Storage::disk('s3')->put('2026-07/oxfam.pdf', 'pdf');
+    Storage::disk('s3')->put('pir/2026-07/oxfam.pdf', 'pdf');
 
     $batch = ImportBatch::create(['label' => '2026 H2', 'type' => 'pir_index', 'folder' => '2026-07']);
 
@@ -88,7 +88,7 @@ it('fails the batch without writing when a file is missing from S3', function ()
 
 it('fails the batch on duplicate cc_refs and missing fields', function () {
     Storage::fake('s3');
-    Storage::disk('s3')->put('2026-07/a.pdf', 'pdf');
+    Storage::disk('s3')->put('pir/2026-07/a.pdf', 'pdf');
 
     $batch = ImportBatch::create(['label' => '2026 H2', 'type' => 'pir_index', 'folder' => '2026-07']);
 
@@ -104,7 +104,7 @@ it('fails the batch on duplicate cc_refs and missing fields', function () {
 
 it('publishes a valid batch with report pdf assets on the new issues', function () {
     Storage::fake('s3');
-    Storage::disk('s3')->put('2026-07/oxfam.pdf', 'pdf');
+    Storage::disk('s3')->put('pir/2026-07/oxfam.pdf', 'pdf');
 
     $batch = ImportBatch::create(['label' => '2026 H2', 'type' => 'pir_index', 'folder' => '2026-07']);
 
@@ -117,7 +117,7 @@ it('publishes a valid batch with report pdf assets on the new issues', function 
     $issue = Issue::where('is_current', true)->firstOrFail();
     $asset = $issue->assets()->where('type', AssetType::ReportPdf)->firstOrFail();
     expect($asset->disk)->toBe('s3')
-        ->and($asset->path)->toBe('2026-07/oxfam.pdf')
+        ->and($asset->path)->toBe('pir/2026-07/oxfam.pdf')
         ->and($asset->original_filename)->toBe('oxfam.pdf');
 });
 
@@ -135,7 +135,7 @@ it('publishes without checking s3 when file validation is disabled', function ()
 
     $asset = Issue::where('is_current', true)->firstOrFail()
         ->assets()->where('type', AssetType::ReportPdf)->firstOrFail();
-    expect($asset->path)->toBe('2026-07/oxfam.pdf');
+    expect($asset->path)->toBe('pir/2026-07/oxfam.pdf');
 });
 
 it('still fails blank filenames when file validation is disabled', function () {
