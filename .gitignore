@@ -23,5 +23,6 @@ yarn-error.log
 /.fleet
 /.idea
 /.nova
+/.claude/worktrees
 .DS_Store
 Thumbs.db
