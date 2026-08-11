@@ -56,6 +56,30 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Registration Toggle
+    |--------------------------------------------------------------------------
+    |
+    | Set this to false to disable public registration while still allowing
+    | existing users to sign in and access the portal.
+    |
+    */
+
+    'allow_registration' => (bool) env('ALLOW_REGISTRATION', true),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Search Access Toggle
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, guests will be redirected to register or login before
+    | they can access the public catalogue and report browsing experience.
+    |
+    */
+
+    'require_registration_for_search' => (bool) env('REQUIRE_REGISTRATION_FOR_SEARCH', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

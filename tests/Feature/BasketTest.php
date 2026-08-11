@@ -70,6 +70,17 @@ it('lists basket lines with total and removes lines', function () {
         ->assertSee('£25.00');
 });
 
+it('shows a clear checkout summary and primary CTA', function () {
+    BasketItem::create([
+        'user_id' => $this->user->id,
+        'report_id' => pirWithIssue()->id,
+    ]);
+
+    Livewire::test(BasketPage::class)
+        ->assertSee('Review your selected reports')
+        ->assertSee('Continue to checkout');
+});
+
 it('cannot remove another users basket line', function () {
     $other = BasketItem::factory()->create();
 

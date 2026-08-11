@@ -7,15 +7,15 @@ use Carbon\CarbonImmutable;
 class ImportDefaults
 {
     /**
-     * Derive Label + S3-folder defaults from a YYYYMM-prefixed index
-     * filename (e.g. "202607-pir-index.xlsx" → July 2026 / 2026-07).
-     * Null when the first six characters are not a valid YYYYMM.
+     * Derive Label + S3-folder defaults from a YYYY-MM-prefixed index
+     * filename (e.g. "2026-07-pir-index.xlsx" → July 2026 / 2026-07).
+     * Null when the leading characters are not a valid YYYY-MM.
      *
      * @return array{label: string, folder: string}|null
      */
     public static function fromFilename(string $filename): ?array
     {
-        if (! preg_match('/^(\d{4})(\d{2})/', $filename, $matches)) {
+        if (! preg_match('/^(\d{4})-(\d{2})/', $filename, $matches)) {
             return null;
         }
 

@@ -15,6 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'webhooks/stripe',
         ]);
+
+        $middleware->alias([
+            'ensure-registration-allowed' => \App\Http\Middleware\EnsureRegistrationAllowed::class,
+            'ensure-search-access' => \App\Http\Middleware\EnsureSearchAccess::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

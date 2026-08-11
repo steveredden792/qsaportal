@@ -10,7 +10,7 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-#[Layout('components.public')]
+#[Layout('components.public', ['title' => 'PIR Catalogue'])]
 class PirCatalogue extends Component
 {
     use WithPagination;
