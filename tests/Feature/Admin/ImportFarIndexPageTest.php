@@ -33,7 +33,7 @@ it('renders the import FAR index page for an authenticated admin', function () {
 
 it('imports providers and creates an ImportBatch via runImport()', function () {
     Storage::fake('s3');
-    Storage::disk('s3')->put('2026-07/acme.pdf', 'pdf');
+    Storage::disk('s3')->put('far/2026-07/acme.pdf', 'pdf');
     Charity::factory()->create(['cc_ref' => '1111111']);
 
     $csv = farIndexCsv(

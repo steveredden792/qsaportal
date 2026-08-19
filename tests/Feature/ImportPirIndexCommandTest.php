@@ -9,8 +9,8 @@ uses(RefreshDatabase::class);
 
 it('imports a PIR index csv via the artisan command', function () {
     Storage::fake('s3');
-    Storage::disk('s3')->put('2026-07/acme-1234567.pdf', 'pdf');
-    Storage::disk('s3')->put('2026-07/beacon-7654321.pdf', 'pdf');
+    Storage::disk('s3')->put('pir/2026-07/acme-1234567.pdf', 'pdf');
+    Storage::disk('s3')->put('pir/2026-07/beacon-7654321.pdf', 'pdf');
 
     $this->artisan('import:pir-index', [
         'path' => base_path('tests/fixtures/pir-index-sample.csv'),

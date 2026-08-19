@@ -17,6 +17,8 @@ use Illuminate\Support\Str;
 
 class FarIndexImporter
 {
+    private const S3_PREFIX = 'far';
+
     /**
      * Validate then publish a FAR index. All-or-nothing: any row error
      * fails the batch and nothing is written.
@@ -76,7 +78,7 @@ class FarIndexImporter
                     ['issue_id' => $issue->id, 'type' => AssetType::ReportPdf],
                     [
                         'disk' => 's3',
-                        'path' => $batch->folder.'/'.$row['filename'],
+                        'path' => $this->s3Path($batch, $row['filename']),
                         'original_filename' => $row['filename'],
                         'mime' => 'application/pdf',
                     ],
@@ -137,8 +139,8 @@ class FarIndexImporter
 
             if ($filename === '') {
                 $errors[] = ['row' => $line, 'error' => 'Missing filename'];
-            } elseif (config('reports.validate_import_files') && ! Storage::disk('s3')->exists($batch->folder.'/'.$filename)) {
-                $errors[] = ['row' => $line, 'error' => "File not found on S3: {$batch->folder}/{$filename}"];
+            } elseif (config('reports.validate_import_files') && ! Storage::disk('s3')->exists($this->s3Path($batch, $filename))) {
+                $errors[] = ['row' => $line, 'error' => "File not found on S3: {$this->s3Path($batch, $filename)}"];
             }
 
             $known = Charity::whereIn('cc_ref', $row['related_cc_refs'] ?? [])->pluck('cc_ref')->all();
@@ -148,5 +150,10 @@ class FarIndexImporter
         }
 
         return $errors;
+    }
+
+    private function s3Path(ImportBatch $batch, string $filename): string
+    {
+        return self::S3_PREFIX.'/'.$batch->folder.'/'.$filename;
     }
 }

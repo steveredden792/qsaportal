@@ -26,7 +26,7 @@ function farRow(array $overrides = []): array
 
 it('publishes a valid FAR batch with provider, tiered report, issue, asset and references', function () {
     Storage::fake('s3');
-    Storage::disk('s3')->put('2026-07/acme.pdf', 'pdf');
+    Storage::disk('s3')->put('far/2026-07/acme.pdf', 'pdf');
     $charity = Charity::factory()->create(['cc_ref' => '1111111']);
 
     $batch = ImportBatch::create(['label' => '2026 H2', 'type' => 'far_index', 'folder' => '2026-07']);
@@ -46,14 +46,14 @@ it('publishes a valid FAR batch with provider, tiered report, issue, asset and r
 
     $issue = $report->currentIssue;
     expect($issue->version_label)->toBe('2026 H2')
-        ->and($issue->assets()->where('type', AssetType::ReportPdf)->first()->path)->toBe('2026-07/acme.pdf')
+        ->and($issue->assets()->where('type', AssetType::ReportPdf)->first()->path)->toBe('far/2026-07/acme.pdf')
         ->and($issue->referencedCharities->pluck('cc_ref')->all())->toBe(['1111111']);
 });
 
 it('flips is_current when reimporting a provider under a new label', function () {
     Storage::fake('s3');
-    Storage::disk('s3')->put('2026-07/acme.pdf', 'pdf');
-    Storage::disk('s3')->put('2027-01/acme2.pdf', 'pdf');
+    Storage::disk('s3')->put('far/2026-07/acme.pdf', 'pdf');
+    Storage::disk('s3')->put('far/2027-01/acme2.pdf', 'pdf');
 
     $importer = app(FarIndexImporter::class);
     $importer->import(
@@ -73,7 +73,7 @@ it('flips is_current when reimporting a provider under a new label', function ()
 
 it('fails without writing on unknown tier, unknown cc ref, missing file, or duplicate provider', function () {
     Storage::fake('s3');
-    Storage::disk('s3')->put('2026-07/acme.pdf', 'pdf');
+    Storage::disk('s3')->put('far/2026-07/acme.pdf', 'pdf');
 
     $batch = ImportBatch::create(['label' => '2026 H2', 'type' => 'far_index', 'folder' => '2026-07']);
 

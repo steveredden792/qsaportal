@@ -23,8 +23,8 @@ it('renders the import PIR index page for an authenticated admin', function () {
 
 it('imports charities and creates an ImportBatch via runImport()', function () {
     Storage::fake('s3');
-    Storage::disk('s3')->put('2026-07/acme-1234567.pdf', 'pdf');
-    Storage::disk('s3')->put('2026-07/beacon-7654321.pdf', 'pdf');
+    Storage::disk('s3')->put('pir/2026-07/acme-1234567.pdf', 'pdf');
+    Storage::disk('s3')->put('pir/2026-07/beacon-7654321.pdf', 'pdf');
 
     $page = app(ImportPirIndex::class);
 
