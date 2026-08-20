@@ -39,7 +39,8 @@ class PirIndexFile
                 }
 
                 if ($key === 'q_score' || $key === 'stability' || $key === 'stability_grade') {
-                    $row[$key] = ($value === '' || $value === null) ? null : (float) $value;
+                    $trimmed = trim((string) $value);
+                    $row[$key] = $trimmed === '' ? null : (float) $trimmed;
                 } elseif ($key === 'q_grade') {
                     $trimmed = trim((string) $value);
                     $row[$key] = $trimmed === '' ? null : $trimmed;

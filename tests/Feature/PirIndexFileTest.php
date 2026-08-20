@@ -74,6 +74,17 @@ it('reads the q grade and stability grade columns', function () {
         ->and($rows[0]['stability_grade'])->toBe(7.5);
 });
 
+it('treats a whitespace-only numeric grade cell as null, not zero', function () {
+    $csv = tempnam(sys_get_temp_dir(), 'pir').'.csv';
+    file_put_contents($csv, "CC Ref,Charity Name,Q Score,Stability,Q Grade,Stability Grade,Filename\n1111111,Oxfam,61.5,55.0,bbb, ,oxfam-1111111.pdf\n");
+
+    $rows = PirIndexFile::read($csv);
+
+    @unlink($csv);
+
+    expect($rows[0]['stability_grade'])->toBeNull();
+});
+
 it('always includes q_grade and stability_grade keys, defaulting to null when the columns are absent', function () {
     $rows = PirIndexFile::read(base_path('tests/fixtures/pir-index-sample.csv'));
 
