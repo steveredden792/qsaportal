@@ -86,3 +86,20 @@ it('ignores an unwhitelisted sortField from the URL (no SQL injection)', functio
         ->set('sortField', 'latest_q_score); drop table charities;--')
         ->assertSee('Gamma');
 });
+
+it('shows Q Grade and Stability Grade columns', function () {
+    pirCharity([
+        'name' => 'Oxfam',
+        'cc_ref' => '1111111',
+        'latest_q_score' => 60,
+        'latest_stability' => 50,
+        'latest_q_grade' => 'bbb',
+        'latest_stability_grade' => 7.5,
+    ]);
+
+    Livewire::test(PirCatalogue::class)
+        ->assertSee('Q Grade')
+        ->assertSee('Stability Grade')
+        ->assertSee('bbb')
+        ->assertSee('7.5');
+});

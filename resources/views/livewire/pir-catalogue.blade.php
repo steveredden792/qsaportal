@@ -33,7 +33,9 @@
                     <th class="cursor-pointer px-4 py-3 font-semibold" wire:click="sortBy('name')">Charity</th>
                     <th class="px-4 py-3 font-semibold">CC ref</th>
                     <th class="cursor-pointer px-4 py-3 font-semibold" wire:click="sortBy('latest_q_score')">Q score</th>
+                    <th class="px-4 py-3 font-semibold">Q Grade</th>
                     <th class="cursor-pointer px-4 py-3 font-semibold" wire:click="sortBy('latest_stability')">Stability</th>
+                    <th class="px-4 py-3 font-semibold">Stability Grade</th>
                     <th class="px-4 py-3 font-semibold"></th>
                 </tr>
             </thead>
@@ -43,7 +45,9 @@
                         <td class="px-4 py-3 font-medium text-slate-900">{{ $charity->name }}</td>
                         <td class="px-4 py-3 text-slate-600">{{ $charity->cc_ref }}</td>
                         <td class="px-4 py-3 text-slate-700">{{ $charity->latest_q_score }}</td>
+                        <td class="px-4 py-3 text-slate-700">{{ $charity->latest_q_grade }}</td>
                         <td class="px-4 py-3 text-slate-700">{{ $charity->latest_stability }}</td>
+                        <td class="px-4 py-3 text-slate-700">{{ $charity->latest_stability_grade }}</td>
                         <td class="px-4 py-3 text-right">
                             <div class="flex items-center justify-end gap-3">
                                 <a href="{{ route('reports.show', $charity->report->slug) }}"
@@ -53,10 +57,15 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="5" class="px-4 py-10 text-center text-slate-500">No reports match your filters.</td></tr>
+                    <tr><td colspan="7" class="px-4 py-10 text-center text-slate-500">No reports match your filters.</td></tr>
                 @endforelse
             </tbody>
         </table>
+    </div>
+
+    <div class="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-600">
+        <span class="font-semibold text-slate-700">Grades:</span>
+        Q Grade and Stability Grade are supplementary bands supplied alongside the numeric Q score and stability figures.
     </div>
 
     <div class="mt-4">{{ $charities->links() }}</div>
