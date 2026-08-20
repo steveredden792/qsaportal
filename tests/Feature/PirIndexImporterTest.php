@@ -152,3 +152,22 @@ it('still fails blank filenames when file validation is disabled', function () {
         ->and($result->errors)->toHaveCount(1)
         ->and($result->errors[0]['error'])->toBe('Missing filename');
 });
+
+it('persists q_grade and stability_grade on the charity and issue', function () {
+    Storage::fake('s3');
+    Storage::disk('s3')->put('pir/2026-07/acme.pdf', 'pdf');
+
+    $batch = ImportBatch::factory()->create(['label' => '2026 H1', 'folder' => '2026-07']);
+
+    (new PirIndexImporter)->import($batch, [
+        ['cc_ref' => '1234567', 'name' => 'Acme Trust', 'q_score' => 55.5, 'stability' => 60.0, 'q_grade' => 'bbb', 'stability_grade' => 7.5, 'filename' => 'acme.pdf'],
+    ]);
+
+    $charity = Charity::where('cc_ref', '1234567')->first();
+    expect($charity->latest_q_grade)->toBe('bbb')
+        ->and((float) $charity->latest_stability_grade)->toBe(7.5);
+
+    $issue = $charity->report->currentIssue;
+    expect($issue->q_grade)->toBe('bbb')
+        ->and((float) $issue->stability_grade)->toBe(7.5);
+});

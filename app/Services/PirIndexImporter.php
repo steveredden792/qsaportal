@@ -20,7 +20,7 @@ class PirIndexImporter
      * Validate then publish a PIR index. All-or-nothing: any row error
      * fails the batch and nothing is written.
      *
-     * @param  iterable<array{cc_ref:string,name:string,q_score:float|null,stability:float|null,filename:string}>  $rows
+     * @param  iterable<array{cc_ref:string,name:string,q_score:float|null,stability:float|null,q_grade?:string|null,stability_grade?:float|null,filename:string}>  $rows
      */
     public function import(ImportBatch $batch, iterable $rows): ImportBatch
     {
@@ -47,6 +47,8 @@ class PirIndexImporter
                         'name' => $row['name'],
                         'latest_q_score' => $row['q_score'],
                         'latest_stability' => $row['stability'],
+                        'latest_q_grade' => $row['q_grade'] ?? null,
+                        'latest_stability_grade' => $row['stability_grade'] ?? null,
                     ]);
                     $updated++;
                 } else {
@@ -55,6 +57,8 @@ class PirIndexImporter
                         'name' => $row['name'],
                         'latest_q_score' => $row['q_score'],
                         'latest_stability' => $row['stability'],
+                        'latest_q_grade' => $row['q_grade'] ?? null,
+                        'latest_stability_grade' => $row['stability_grade'] ?? null,
                     ]);
                     $created++;
                 }
@@ -69,7 +73,12 @@ class PirIndexImporter
                     ->first();
 
                 if ($issue) {
-                    $issue->update(['q_score' => $row['q_score'], 'stability' => $row['stability']]);
+                    $issue->update([
+                        'q_score' => $row['q_score'],
+                        'stability' => $row['stability'],
+                        'q_grade' => $row['q_grade'] ?? null,
+                        'stability_grade' => $row['stability_grade'] ?? null,
+                    ]);
                 } else {
                     Issue::where('report_id', $report->id)->update(['is_current' => false]);
                     $issue = Issue::create([
@@ -79,6 +88,8 @@ class PirIndexImporter
                         'is_current' => true,
                         'q_score' => $row['q_score'],
                         'stability' => $row['stability'],
+                        'q_grade' => $row['q_grade'] ?? null,
+                        'stability_grade' => $row['stability_grade'] ?? null,
                     ]);
                     $issuesCreated++;
                 }
