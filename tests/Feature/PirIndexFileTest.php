@@ -60,3 +60,25 @@ it('reads an XLSX file via PirIndexFile', function () {
         'stability' => 75.2,
     ]);
 });
+
+it('reads the q grade and stability grade columns', function () {
+    $csv = tempnam(sys_get_temp_dir(), 'pir').'.csv';
+    file_put_contents($csv, "CC Ref,Charity Name,Q Score,Stability,Q Grade,Stability Grade,Filename\n1111111,Oxfam,61.5,55.0,bbb,7.5,oxfam-1111111.pdf\n");
+
+    $rows = PirIndexFile::read($csv);
+
+    @unlink($csv);
+
+    expect($rows)->toHaveCount(1)
+        ->and($rows[0]['q_grade'])->toBe('bbb')
+        ->and($rows[0]['stability_grade'])->toBe(7.5);
+});
+
+it('always includes q_grade and stability_grade keys, defaulting to null when the columns are absent', function () {
+    $rows = PirIndexFile::read(base_path('tests/fixtures/pir-index-sample.csv'));
+
+    expect(array_key_exists('q_grade', $rows[0]))->toBeTrue()
+        ->and($rows[0]['q_grade'])->toBeNull()
+        ->and(array_key_exists('stability_grade', $rows[0]))->toBeTrue()
+        ->and($rows[0]['stability_grade'])->toBeNull();
+});
