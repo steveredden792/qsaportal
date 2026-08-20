@@ -13,7 +13,7 @@ class Issue extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['report_id', 'version_label', 'published_at', 'is_current', 'q_score', 'stability'];
+    protected $fillable = ['report_id', 'version_label', 'published_at', 'is_current', 'q_score', 'stability', 'q_grade', 'stability_grade'];
 
     protected function casts(): array
     {
@@ -22,6 +22,7 @@ class Issue extends Model
             'is_current' => 'boolean',
             'q_score' => 'decimal:2',
             'stability' => 'decimal:2',
+            'stability_grade' => 'decimal:1',
         ];
     }
 

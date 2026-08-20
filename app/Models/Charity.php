@@ -10,13 +10,14 @@ class Charity extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['cc_ref', 'name', 'latest_q_score', 'latest_stability'];
+    protected $fillable = ['cc_ref', 'name', 'latest_q_score', 'latest_stability', 'latest_q_grade', 'latest_stability_grade'];
 
     protected function casts(): array
     {
         return [
             'latest_q_score' => 'decimal:2',
             'latest_stability' => 'decimal:2',
+            'latest_stability_grade' => 'decimal:1',
         ];
     }
 
