@@ -26,6 +26,52 @@
                 @endif
             </section>
 
+            @if ($issue && ($issue->accounting_date || $issue->charity_type || $issue->formation_date || $issue->stability_rank !== null || $issue->q_score_rank !== null || $issue->objectives))
+                <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-2">
+                    <h2 class="text-lg font-semibold text-slate-900">Report summary</h2>
+
+                    <dl class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        @if ($issue->charity_type)
+                            <div>
+                                <dt class="text-xs uppercase tracking-[0.25em] text-slate-500">Type</dt>
+                                <dd class="mt-1 text-slate-900">{{ $issue->charity_type }}</dd>
+                            </div>
+                        @endif
+                        @if ($issue->accounting_date)
+                            <div>
+                                <dt class="text-xs uppercase tracking-[0.25em] text-slate-500">Accounting date</dt>
+                                <dd class="mt-1 text-slate-900">{{ $issue->accounting_date->format('j M Y') }}</dd>
+                            </div>
+                        @endif
+                        @if ($issue->formation_date)
+                            <div>
+                                <dt class="text-xs uppercase tracking-[0.25em] text-slate-500">Year of formation</dt>
+                                <dd class="mt-1 text-slate-900">{{ $issue->formation_date->format('j M Y') }}</dd>
+                            </div>
+                        @endif
+                        @if ($issue->q_score_rank !== null)
+                            <div>
+                                <dt class="text-xs uppercase tracking-[0.25em] text-slate-500">Q score rank</dt>
+                                <dd class="mt-1 text-slate-900">{{ $issue->q_score_rank }}</dd>
+                            </div>
+                        @endif
+                        @if ($issue->stability_rank !== null)
+                            <div>
+                                <dt class="text-xs uppercase tracking-[0.25em] text-slate-500">Stability rank</dt>
+                                <dd class="mt-1 text-slate-900">{{ $issue->stability_rank }}</dd>
+                            </div>
+                        @endif
+                    </dl>
+
+                    @if ($issue->objectives)
+                        <div class="mt-6">
+                            <div class="text-xs uppercase tracking-[0.25em] text-slate-500">Charity objectives</div>
+                            <p class="mt-2 whitespace-pre-line text-sm text-slate-600">{{ $issue->objectives }}</p>
+                        </div>
+                    @endif
+                </section>
+            @endif
+
             <section class="rounded-3xl border border-slate-200 bg-brand px-6 py-6 text-white shadow-sm">
                 <p class="text-sm font-semibold uppercase tracking-[0.25em] text-brand-light">Access</p>
                 <div class="mt-3 flex items-center gap-4">

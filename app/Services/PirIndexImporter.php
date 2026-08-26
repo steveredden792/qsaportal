@@ -20,7 +20,7 @@ class PirIndexImporter
      * Validate then publish a PIR index. All-or-nothing: any row error
      * fails the batch and nothing is written.
      *
-     * @param  iterable<array{cc_ref:string,name:string,q_score:float|null,stability:float|null,q_grade?:string|null,stability_grade?:float|null,filename:string}>  $rows
+     * @param  iterable<array{cc_ref:string,name:string,q_score:float|null,stability:float|null,q_grade?:string|null,stability_grade?:float|null,filename:string,accounting_date?:string|null,charity_type?:string|null,formation_date?:string|null,stability_rank?:int|null,q_score_rank?:int|null,objectives?:string|null}>  $rows
      */
     public function import(ImportBatch $batch, iterable $rows): ImportBatch
     {
@@ -72,24 +72,28 @@ class PirIndexImporter
                     ->where('version_label', $batch->label)
                     ->first();
 
+                $issueGradeFields = [
+                    'q_score' => $row['q_score'],
+                    'stability' => $row['stability'],
+                    'q_grade' => $row['q_grade'] ?? null,
+                    'stability_grade' => $row['stability_grade'] ?? null,
+                    'accounting_date' => $row['accounting_date'] ?? null,
+                    'charity_type' => $row['charity_type'] ?? null,
+                    'formation_date' => $row['formation_date'] ?? null,
+                    'stability_rank' => $row['stability_rank'] ?? null,
+                    'q_score_rank' => $row['q_score_rank'] ?? null,
+                    'objectives' => $row['objectives'] ?? null,
+                ];
+
                 if ($issue) {
-                    $issue->update([
-                        'q_score' => $row['q_score'],
-                        'stability' => $row['stability'],
-                        'q_grade' => $row['q_grade'] ?? null,
-                        'stability_grade' => $row['stability_grade'] ?? null,
-                    ]);
+                    $issue->update($issueGradeFields);
                 } else {
                     Issue::where('report_id', $report->id)->update(['is_current' => false]);
-                    $issue = Issue::create([
+                    $issue = Issue::create($issueGradeFields + [
                         'report_id' => $report->id,
                         'version_label' => $batch->label,
                         'published_at' => now(),
                         'is_current' => true,
-                        'q_score' => $row['q_score'],
-                        'stability' => $row['stability'],
-                        'q_grade' => $row['q_grade'] ?? null,
-                        'stability_grade' => $row['stability_grade'] ?? null,
                     ]);
                     $issuesCreated++;
                 }

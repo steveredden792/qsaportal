@@ -93,3 +93,76 @@ it('always includes q_grade and stability_grade keys, defaulting to null when th
         ->and(array_key_exists('stability_grade', $rows[0]))->toBeTrue()
         ->and($rows[0]['stability_grade'])->toBeNull();
 });
+
+it('reads the report summary columns', function () {
+    $csv = tempnam(sys_get_temp_dir(), 'pir').'.csv';
+    file_put_contents(
+        $csv,
+        "CC Ref,Charity Name,Q Score,Stability,Filename,Accounting Date,Type,Year Of Formation,Stability Rank,Q Score Rank,Charity Objectives\n"
+        .'1111111,Oxfam,61.5,55.0,oxfam-1111111.pdf,31/07/2025,Charitable company,01/02/2001,"1,719","1,800",Relieves poverty.'
+    );
+
+    $rows = PirIndexFile::read($csv);
+
+    @unlink($csv);
+
+    expect($rows[0])->toMatchArray([
+        'accounting_date' => '2025-07-31',
+        'charity_type' => 'Charitable company',
+        'formation_date' => '2001-02-01',
+        'stability_rank' => 1719,
+        'q_score_rank' => 1800,
+        'objectives' => 'Relieves poverty.',
+    ]);
+});
+
+it('treats an unparseable date as null', function () {
+    $csv = tempnam(sys_get_temp_dir(), 'pir').'.csv';
+    file_put_contents(
+        $csv,
+        "CC Ref,Charity Name,Q Score,Stability,Filename,Accounting Date\n1111111,Oxfam,61.5,55.0,oxfam-1111111.pdf,not-a-date\n"
+    );
+
+    $rows = PirIndexFile::read($csv);
+
+    @unlink($csv);
+
+    expect($rows[0]['accounting_date'])->toBeNull();
+});
+
+it('reads a full row using the real import file header names', function () {
+    $csv = tempnam(sys_get_temp_dir(), 'pir').'.csv';
+    file_put_contents(
+        $csv,
+        "Name,Registered Number,Q Score,Q Grade,Stability Score,Stability Grade,Accounting Date,Type,Year Of Formation,Stability Rank,Q Score Rank,Charity Objectives\n"
+        .'1509 GROUP,1084866,53.50%,a,62.40%,7,31/07/2025,Charitable company,01/02/2001,663,469,Advances education.'
+    );
+
+    $rows = PirIndexFile::read($csv);
+
+    @unlink($csv);
+
+    expect($rows[0])->toMatchArray([
+        'cc_ref' => '1084866',
+        'name' => '1509 GROUP',
+        'q_score' => 53.5,
+        'q_grade' => 'a',
+        'stability' => 62.4,
+        'stability_grade' => 7.0,
+        'accounting_date' => '2025-07-31',
+        'charity_type' => 'Charitable company',
+        'formation_date' => '2001-02-01',
+        'stability_rank' => 663,
+        'q_score_rank' => 469,
+        'objectives' => 'Advances education.',
+    ]);
+});
+
+it('always includes the report summary keys, defaulting to null when the columns are absent', function () {
+    $rows = PirIndexFile::read(base_path('tests/fixtures/pir-index-sample.csv'));
+
+    foreach (['accounting_date', 'charity_type', 'formation_date', 'stability_rank', 'q_score_rank', 'objectives'] as $key) {
+        expect(array_key_exists($key, $rows[0]))->toBeTrue()
+            ->and($rows[0][$key])->toBeNull();
+    }
+});

@@ -171,3 +171,35 @@ it('persists q_grade and stability_grade on the charity and issue', function () 
     expect($issue->q_grade)->toBe('bbb')
         ->and((float) $issue->stability_grade)->toBe(7.5);
 });
+
+it('persists report summary fields on the issue only, not the charity', function () {
+    Storage::fake('s3');
+    Storage::disk('s3')->put('pir/2026-07/acme.pdf', 'pdf');
+
+    $batch = ImportBatch::factory()->create(['label' => '2026 H1', 'folder' => '2026-07']);
+
+    (new PirIndexImporter)->import($batch, [
+        [
+            'cc_ref' => '1234567',
+            'name' => 'Acme Trust',
+            'q_score' => 55.5,
+            'stability' => 60.0,
+            'filename' => 'acme.pdf',
+            'accounting_date' => '2025-07-31',
+            'charity_type' => 'Charitable company',
+            'formation_date' => '2001-02-01',
+            'stability_rank' => 1719,
+            'q_score_rank' => 1800,
+            'objectives' => 'Relieves poverty.',
+        ],
+    ]);
+
+    $issue = Charity::where('cc_ref', '1234567')->first()->report->currentIssue;
+
+    expect($issue->accounting_date->toDateString())->toBe('2025-07-31')
+        ->and($issue->charity_type)->toBe('Charitable company')
+        ->and($issue->formation_date->toDateString())->toBe('2001-02-01')
+        ->and($issue->stability_rank)->toBe(1719)
+        ->and($issue->q_score_rank)->toBe(1800)
+        ->and($issue->objectives)->toBe('Relieves poverty.');
+});
