@@ -10,7 +10,7 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-#[Layout('components.public', ['title' => 'PIR Catalogue'])]
+#[Layout('components.public', ['title' => 'PIR Database'])]
 class PirCatalogue extends Component
 {
     use WithPagination;
@@ -43,6 +43,12 @@ class PirCatalogue extends Component
         if ($name !== 'page') {
             $this->resetPage();
         }
+    }
+
+    public function clearFilters(): void
+    {
+        $this->reset('search', 'qMin', 'qMax', 'stabilityMin', 'stabilityMax');
+        $this->resetPage();
     }
 
     public function sortBy(string $field): void

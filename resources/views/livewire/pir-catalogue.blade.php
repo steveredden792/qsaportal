@@ -2,7 +2,7 @@
     <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <div class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <div>
-                <h1 class="text-3xl font-semibold text-slate-900">Public Information Reports</h1>
+                <h1 class="text-3xl font-semibold text-slate-900">PIR Database</h1>
                 <p class="mt-2 max-w-2xl text-sm text-slate-600">
                     Search charity records, compare Q scores and stability and open the report detail view for each entry.
                 </p>
@@ -23,6 +23,10 @@
                 <input type="number" wire:model.live="stabilityMin" placeholder="Stability min" class="rounded-full border-slate-300 bg-slate-50 px-4 py-2.5 focus:border-brand focus:ring-brand">
                 <input type="number" wire:model.live="stabilityMax" placeholder="Stability max" class="rounded-full border-slate-300 bg-slate-50 px-4 py-2.5 focus:border-brand focus:ring-brand">
             </div>
+            <div>
+                <button type="button" wire:click="clearFilters"
+                        class="inline-flex rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-700 transition hover:border-brand hover:text-brand">Clear Filters</button>
+            </div>
         </div>
     </section>
 
@@ -31,8 +35,8 @@
             <thead class="bg-slate-50 text-left text-slate-600">
                 <tr>
                     <th class="cursor-pointer px-4 py-3 font-semibold" wire:click="sortBy('name')">Charity</th>
-                    <th class="px-4 py-3 font-semibold">CC ref</th>
-                    <th class="cursor-pointer px-4 py-3 font-semibold" wire:click="sortBy('latest_q_score')">Q score</th>
+                    <th class="px-4 py-3 font-semibold">CC Ref</th>
+                    <th class="cursor-pointer px-4 py-3 font-semibold" wire:click="sortBy('latest_q_score')">Q Score</th>
                     <th class="px-4 py-3 font-semibold">Q Grade</th>
                     <th class="cursor-pointer px-4 py-3 font-semibold" wire:click="sortBy('latest_stability')">Stability</th>
                     <th class="px-4 py-3 font-semibold">Stability Grade</th>
@@ -42,18 +46,19 @@
             <tbody class="divide-y divide-slate-100">
                 @forelse ($charities as $charity)
                     <tr wire:key="charity-{{ $charity->id }}" class="hover:bg-slate-50">
-                        <td class="px-4 py-3 font-medium text-slate-900">{{ $charity->name }}</td>
+                        @php $displayName = \Illuminate\Support\Str::upper($charity->name); $truncated = \Illuminate\Support\Str::length($displayName) > 30; @endphp
+                        <td class="px-4 py-3 font-medium text-slate-900" style="white-space: nowrap;"
+                            @if ($truncated) title="{{ $displayName }}" @endif>
+                            {{ $truncated ? \Illuminate\Support\Str::limit($displayName, 30, '…') : $displayName }}
+                        </td>
                         <td class="px-4 py-3 text-slate-600">{{ $charity->cc_ref }}</td>
                         <td class="px-4 py-3 text-slate-700">{{ $charity->latest_q_score }}</td>
                         <td class="px-4 py-3 text-slate-700">{{ $charity->latest_q_grade }}</td>
                         <td class="px-4 py-3 text-slate-700">{{ $charity->latest_stability }}</td>
                         <td class="px-4 py-3 text-slate-700">{{ $charity->latest_stability_grade }}</td>
                         <td class="px-4 py-3 text-right">
-                            <div class="flex items-center justify-end gap-3">
-                                <a href="{{ route('reports.show', $charity->report->slug) }}"
-                                   class="font-medium text-brand transition hover:text-brand-light">View report</a>
-                                <livewire:add-to-basket :report="$charity->report" :key="'atb-'.$charity->id" />
-                            </div>
+                            <a href="{{ route('reports.show', $charity->report->slug) }}"
+                               class="inline-flex rounded bg-brand px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-light">View report</a>
                         </td>
                     </tr>
                 @empty

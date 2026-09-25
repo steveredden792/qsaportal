@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\AssetType;
 use App\Enums\ReportType;
+use App\Models\Charity;
 use App\Models\Report;
 use App\Support\Pricing;
 use Illuminate\Http\Request;
@@ -20,11 +21,13 @@ class ReportController extends Controller
             abort(404);
         }
 
-        $ownedEntitlements = $request->user()->entitlements()
-            ->active()
-            ->whereHas('issue', fn ($q) => $q->where('report_id', $report->id))
-            ->with('issue.assets')
-            ->get();
+        $ownedEntitlements = $request->user()
+            ? $request->user()->entitlements()
+                ->active()
+                ->whereHas('issue', fn ($q) => $q->where('report_id', $report->id))
+                ->with('issue.assets')
+                ->get()
+            : collect();
 
         return view('reports.pir-detail', [
             'report' => $report,
@@ -33,6 +36,7 @@ class ReportController extends Controller
             'teaser' => $teaser,
             'price' => Pricing::for('pir', 'single'),
             'ownedEntitlements' => $ownedEntitlements,
+            'rankTotal' => Charity::whereHas('report', fn ($q) => $q->where('type', ReportType::PIR))->count(),
         ]);
     }
 }

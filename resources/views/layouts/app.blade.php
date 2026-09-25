@@ -16,7 +16,7 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-qsa-grey">
-            <livewire:layout.navigation />
+            <x-site-header />
 
             <!-- Page Heading -->
             @if (isset($header))
