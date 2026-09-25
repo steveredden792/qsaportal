@@ -20,6 +20,12 @@ class PurgeUnindexedCharities extends Command
     {
         $path = (string) $this->argument('path');
 
+        // Relative paths are resolved against the project root as well as the
+        // current directory, so the command works from 20i's Command Executor.
+        if (! is_file($path) && is_file(base_path($path))) {
+            $path = base_path($path);
+        }
+
         if (! is_file($path)) {
             $this->error("File not found: {$path}");
 

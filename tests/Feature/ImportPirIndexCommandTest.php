@@ -46,3 +46,17 @@ it('fails cleanly when the file is missing', function () {
 
     expect(ImportBatch::count())->toBe(0);
 });
+
+it('derives label and folder from a YYYY-MM filename and accepts a project-relative path', function () {
+    Storage::fake('s3');
+    Storage::disk('s3')->put('pir/2026-07/acme-1234567.pdf', 'pdf');
+    Storage::disk('s3')->put('pir/2026-07/beacon-7654321.pdf', 'pdf');
+
+    $this->artisan('import:pir-index', ['path' => 'tests/fixtures/2026-07-pir-index.csv'])
+        ->assertSuccessful();
+
+    $batch = ImportBatch::firstOrFail();
+    expect($batch->label)->toBe('July 2026')
+        ->and($batch->folder)->toBe('2026-07')
+        ->and(Charity::count())->toBe(2);
+});

@@ -6,7 +6,7 @@ How to get changes from your laptop (WAMP, VS Code) onto the live 20i Laravel Ma
 VS Code (build + commit + sync)  →  GitHub (steveredden792/qsaportal, main)  →  20i Git deploy  →  Command Executor
 ```
 
-> **Command Executor runs one command at a time.** Don't chain commands with `&&`. Run each line below on its own and wait for it to finish before you start the next.
+> **Command Executor runs one command at a time.** Don't chain commands with `&&`, and don't use quote marks (`"`). Run each line below on its own and wait for it to finish before you start the next. It can report "ran successfully" even when the command failed, so always read the output.
 
 ---
 
@@ -132,9 +132,9 @@ The catalogue data isn't in Git. It comes from importing the PIR index file. Do 
 
 **4.1 Upload the index file.** Using 20i **File Manager**, upload the index CSV (e.g. `2026-06-pir-index.csv`) into the project's `storage/app/private/imports/` folder. This folder is git-ignored, so the file won't arrive with a deploy.
 
-**4.2 Import it**, one command. The arguments are: file path, issue label, S3 folder.
+**4.2 Import it**, one command. The label ("June 2026") and S3 folder (`2026-06`) are taken from the `YYYY-MM` at the start of the filename, so name index files that way. Command Executor doesn't accept quote marks, so don't type a label with spaces.
 ```
-php artisan import:pir-index storage/app/private/imports/2026-06-pir-index.csv "June 2026" 2026-06
+php artisan import:pir-index storage/app/private/imports/2026-06-pir-index.csv
 ```
 You can also use **Admin → Import PIR Index** in the browser. The command line is better for large files, because it won't hit the web upload size or time limits.
 
