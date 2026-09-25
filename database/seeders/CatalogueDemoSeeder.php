@@ -39,6 +39,16 @@ class CatalogueDemoSeeder extends Seeder
                 'original_filename' => 'sample-teaser.pdf',
                 'mime' => 'application/pdf',
             ]);
+
+            // Demo stand-in for the full report PDF so the purchase -> download
+            // flow is exercisable. Point at a real S3 key (see config('demo.sample_report_pdf')).
+            Asset::factory()->for($issue)->create([
+                'type' => AssetType::ReportPdf,
+                'disk' => config('demo.sample_report_disk'),
+                'path' => config('demo.sample_report_pdf'),
+                'original_filename' => 'sample-report.pdf',
+                'mime' => 'application/pdf',
+            ]);
         });
 
         Provider::factory(5)->create()->each(function (Provider $provider) use ($charities) {

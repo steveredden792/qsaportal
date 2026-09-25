@@ -72,6 +72,12 @@ class PirIndexFile
                 }
             }
 
+            // The index carries no PDF filename column; the published PDF is
+            // named by the charity's CC reference, e.g. 1084866.pdf.
+            if ($row['filename'] === '' && $row['cc_ref'] !== '') {
+                $row['filename'] = $row['cc_ref'].'.pdf';
+            }
+
             $rows[] = $row;
         }
 
