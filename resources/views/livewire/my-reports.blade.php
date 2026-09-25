@@ -1,4 +1,11 @@
 <div class="space-y-6">
+    @if (session('status'))
+        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)"
+             class="rounded-2xl border border-brand/20 bg-brand/5 px-4 py-3 text-sm font-medium text-brand">
+            {{ session('status') }}
+        </div>
+    @endif
+
     <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <div class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <div>

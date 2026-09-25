@@ -32,11 +32,15 @@ new #[Layout('layouts.guest')] class extends Component
 
         Auth::login($user);
 
-        $this->redirect(route('dashboard', absolute: false), navigate: true);
+        session()->flash('status', "You're logged in!");
+
+        $this->redirectIntended(default: route('my-reports', absolute: false), navigate: true);
     }
 }; ?>
 
 <div>
+    <x-auth-session-status class="mb-4" :status="session('status')" />
+
     <form wire:submit="register">
         <!-- Name -->
         <div>

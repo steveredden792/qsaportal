@@ -2,7 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Models\BasketItem;
+use App\Support\Basket;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -18,7 +18,7 @@ class BasketBadge extends Component
     public function render(): View
     {
         return view('livewire.basket-badge', [
-            'count' => BasketItem::where('user_id', auth()->id())->count(),
+            'count' => Basket::count(),
         ]);
     }
 }

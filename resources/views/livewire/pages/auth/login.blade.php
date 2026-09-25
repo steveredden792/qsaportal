@@ -20,7 +20,9 @@ new #[Layout('layouts.guest')] class extends Component
 
         Session::regenerate();
 
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        session()->flash('status', "You're logged in!");
+
+        $this->redirectIntended(default: route('my-reports', absolute: false), navigate: true);
     }
 }; ?>
 

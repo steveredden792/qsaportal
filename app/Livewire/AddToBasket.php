@@ -3,8 +3,8 @@
 namespace App\Livewire;
 
 use App\Enums\AssetType;
-use App\Models\BasketItem;
 use App\Models\Report;
+use App\Support\Basket;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
@@ -14,29 +14,26 @@ class AddToBasket extends Component
 
     public function add(): void
     {
-        BasketItem::firstOrCreate([
-            'user_id' => auth()->id(),
-            'report_id' => $this->report->id,
-        ]);
+        Basket::add($this->report);
 
         $this->dispatch('basket-updated');
     }
 
     public function render(): View
     {
+        $user = auth()->user();
         $issue = $this->report->currentIssue()->with('assets')->first();
 
-        $hasEntitlement = $issue !== null
-            && auth()->user()->entitlements()->active()->where('issue_id', $issue->id)->exists();
+        $hasEntitlement = $user !== null
+            && $issue !== null
+            && $user->entitlements()->active()->where('issue_id', $issue->id)->exists();
 
         $ownedPdf = $hasEntitlement ? $issue->assets->firstWhere('type', AssetType::ReportPdf) : null;
 
         return view('livewire.add-to-basket', [
             'owned' => $ownedPdf !== null,
             'ownedPdf' => $ownedPdf,
-            'inBasket' => ! $hasEntitlement && BasketItem::where('user_id', auth()->id())
-                ->where('report_id', $this->report->id)
-                ->exists(),
+            'inBasket' => ! $hasEntitlement && Basket::contains($this->report->id),
             'purchasable' => $issue !== null && ! $hasEntitlement,
         ]);
     }

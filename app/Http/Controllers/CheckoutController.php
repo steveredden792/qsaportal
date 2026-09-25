@@ -6,6 +6,7 @@ use App\Enums\ReportType;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Payments\PaymentGateway;
+use App\Services\FulfilOrder;
 use App\Support\Pricing;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,9 +15,21 @@ use Illuminate\View\View;
 
 class CheckoutController extends Controller
 {
-    public function store(Request $request, PaymentGateway $gateway): RedirectResponse
+    public function store(Request $request, PaymentGateway $gateway, FulfilOrder $fulfil): RedirectResponse
     {
         $user = $request->user();
+
+        if ($user === null) {
+            // PIR checkout needs no prior registration: the account is created (or
+            // signed into) here as part of checkout, with no email verification gate.
+            // The session cart is merged into the account on login, then they land back here.
+            session(['url.intended' => route('basket.show')]);
+
+            return redirect()
+                ->route(config('app.allow_registration', true) ? 'register' : 'login')
+                ->with('status', 'Create your account (or log in) to complete your purchase — your cart will be waiting for you.');
+        }
+
         $basketItems = $user->basketItems()->with('report.currentIssue')->get();
 
         if ($basketItems->isEmpty()) {
@@ -69,6 +82,14 @@ class CheckoutController extends Controller
 
             return $order;
         });
+
+        // Demo bypass: fulfil the order in-app and skip the gateway + webhook,
+        // so the end-to-end flow works locally without external Stripe.
+        if (config('demo.instant_fulfil')) {
+            $fulfil->handle($order->id, 'demo_'.$order->id);
+
+            return redirect()->route('checkout.success', $order);
+        }
 
         return redirect()->away($gateway->checkoutUrl(
             $order->load('items.issue.report'),

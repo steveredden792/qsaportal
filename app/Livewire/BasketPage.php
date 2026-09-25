@@ -2,35 +2,31 @@
 
 namespace App\Livewire;
 
-use App\Models\BasketItem;
+use App\Support\Basket;
 use App\Support\Pricing;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-#[Layout('components.public')]
+#[Layout('components.public', ['title' => 'Your Cart'])]
 class BasketPage extends Component
 {
-    public function remove(int $basketItemId): void
+    public function remove(int $reportId): void
     {
-        BasketItem::where('user_id', auth()->id())->whereKey($basketItemId)->delete();
+        Basket::removeReport($reportId);
 
         $this->dispatch('basket-updated');
     }
 
     public function render(): View
     {
-        $items = BasketItem::with('report')
-            ->where('user_id', auth()->id())
-            ->latest()
-            ->get();
-
+        $reports = Basket::reports();
         $price = Pricing::for('pir', 'single');
 
         return view('livewire.basket-page', [
-            'items' => $items,
+            'reports' => $reports,
             'price' => $price,
-            'total' => $price * $items->count(),
+            'total' => $price * $reports->count(),
         ]);
     }
 }
